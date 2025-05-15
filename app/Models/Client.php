@@ -13,4 +13,9 @@ class Client extends Model
     {
         return $this->belongsTo(Gym::class);
     }
+
+    public function subscriptions()
+    {
+        return $this->belongsToMany(Subscription::class);
+    }
 }
