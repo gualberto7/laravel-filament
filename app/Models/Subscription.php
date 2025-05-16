@@ -29,4 +29,9 @@ class Subscription extends Model
     {
         return $this->belongsTo(Gym::class);
     }
+
+    public function payments()
+    {
+        return $this->hasMany(SubscriptionPayment::class);
+    }
 }
