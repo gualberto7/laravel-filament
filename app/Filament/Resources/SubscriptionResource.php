@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Set;
 use Filament\Forms\Get;
 use Carbon\Carbon;
+use App\Models\Client;
 
 class SubscriptionResource extends Resource
 {
@@ -26,35 +27,70 @@ class SubscriptionResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('membership_id')
-                    ->relationship('membership', 'name')
-                    ->required()
-                    ->live()
-                    ->afterStateUpdated(function (Set $set, $state) {
-                        if ($state) {
-                            $membership = \App\Models\Membership::find($state);
-                            if ($membership) {
-                                $set('end_date', now()->addDays($membership->duration)->format('Y-m-d'));
-                                $set('price', $membership->price);
-                            }
-                        }
-                    }),
-                Forms\Components\TextInput::make('price')
-                    ->readOnly(),
-                Forms\Components\DatePicker::make('start_date')
-                    ->default(now())
-                    ->live()
-                    ->afterStateUpdated(function (Set $set, Get $get, $state) {
-                        if ($state) {
-                            $membership = \App\Models\Membership::find($get('membership_id'));
-                            if ($membership) {
-                                $set('end_date', Carbon::parse($state)->addDays($membership->duration)->format('Y-m-d'));
-                            }
-                        }
-                    })
-                    ->required(),
-                Forms\Components\DatePicker::make('end_date')
-                    ->readOnly()
+                Forms\Components\Section::make('Datos de la Suscripción')
+                    ->columns([
+                        'sm' => 1,
+                        'md' => 2,
+                    ])
+                    ->schema([
+                        Forms\Components\Select::make('membership_id')
+                            ->relationship('membership', 'name')
+                            ->required()
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, $state) {
+                                if ($state) {
+                                    $membership = \App\Models\Membership::find($state);
+                                    if ($membership) {
+                                        $set('end_date', now()->addDays($membership->duration)->format('Y-m-d'));
+                                        $set('price', $membership->price);
+                                    }
+                                }
+                            }),
+                        Forms\Components\TextInput::make('price')
+                            ->prefix('Bs.')
+                            ->readOnly(),
+                        Forms\Components\DatePicker::make('start_date')
+                            ->default(now())
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, Get $get, $state) {
+                                if ($state) {
+                                    $membership = \App\Models\Membership::find($get('membership_id'));
+                                    if ($membership) {
+                                        $set('end_date', Carbon::parse($state)->addDays($membership->duration)->format('Y-m-d'));
+                                    }
+                                }
+                            })
+                            ->required(),
+                        Forms\Components\DatePicker::make('end_date')
+                            ->readOnly()
+                        ]),
+                
+                Forms\Components\Section::make('Datos del Cliente')
+                    ->schema([
+                        Forms\Components\Select::make('clients')
+                            ->relationship('clients', 'name')
+                            ->createOptionForm([
+                                Forms\Components\TextInput::make('name')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('card_id')
+                                    ->required(),
+                                Forms\Components\TextInput::make('phone')
+                                    ->required()
+                                    ->maxLength(255),
+                            ])
+                            ->createOptionUsing(function (array $data): int {
+                                $client = Client::create($data + [
+                                    'gym_id' => auth()->user()->gym->id,
+                                ]);
+                                return $client->id;
+                            })
+                            ->getOptionLabelFromRecordUsing(fn (Client $record) => $record->name . ' - ' . $record->card_id)
+                            ->searchable(['name', 'card_id'])
+                            ->multiple()
+                            ->pivotData([])
+                            ->required(),
+                    ])
             ]);
     }
 
@@ -62,7 +98,12 @@ class SubscriptionResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('membership.name'),
+                Tables\Columns\TextColumn::make('price'),
+                Tables\Columns\TextColumn::make('start_date')
+                    ->dateTime('d-m-Y'),
+                Tables\Columns\TextColumn::make('end_date')
+                    ->dateTime('d-m-Y'),
             ])
             ->filters([
                 //
