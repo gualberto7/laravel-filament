@@ -98,8 +98,9 @@ class SubscriptionResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('clients.name')
+                    ->searchable(['name', 'card_id']),
                 Tables\Columns\TextColumn::make('membership.name'),
-                Tables\Columns\TextColumn::make('price'),
                 Tables\Columns\TextColumn::make('start_date')
                     ->dateTime('d-m-Y'),
                 Tables\Columns\TextColumn::make('end_date')
