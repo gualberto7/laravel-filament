@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Get;
 
 class MembershipResource extends Resource
 {
@@ -27,12 +28,41 @@ class MembershipResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('price')
-                    ->required()
-                    ->maxLength(255),
+                    ->prefix('Bs.')
+                    ->numeric()
+                    ->required(),
                 Forms\Components\TextInput::make('duration')
+                    ->prefix('Días')
                     ->required()
-                    ->maxLength(255)
-                    
+                    ->numeric(),
+                Forms\Components\TextInput::make('max_installments')
+                    ->label('Paga en cuotas')
+                    ->required()
+                    ->numeric()
+                    ->default(1),
+                Forms\Components\Checkbox::make('has_max_checkins')
+                    ->label('Maximo de checkins?')
+                    ->live(),
+                Forms\Components\TextInput::make('max_checkins')
+                    ->label('Máx. checkins')
+                    ->numeric()
+                    ->required()
+                    ->visible(fn (Get $get): bool => $get('has_max_checkins')),
+                Forms\Components\Checkbox::make('is_promo')
+                    ->label('Promo?')
+                    ->live(),
+                Forms\Components\DatePicker::make('promo_start_date')
+                    ->label('Fecha de inicio de promo')
+                    ->visible(fn (Get $get): bool => $get('is_promo')),
+                Forms\Components\DatePicker::make('promo_end_date')
+                    ->label('Fecha de fin de promo')
+                    ->visible(fn (Get $get): bool => $get('is_promo')),
+                Forms\Components\TextInput::make('max_clients')
+                    ->label('Máx. clientes')
+                    ->default(1)
+                    ->numeric()
+                    ->required()
+                    ->visible(fn (Get $get): bool => $get('is_promo')),
             ]);
     }
 

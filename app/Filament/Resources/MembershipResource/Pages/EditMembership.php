@@ -16,4 +16,12 @@ class EditMembership extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['updated_by'] = auth()->user()->name;
+        // Remove has_max_checkins from data
+        unset($data['has_max_checkins']);
+        return $data;
+    }
 }
