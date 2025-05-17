@@ -18,4 +18,9 @@ class Client extends Model
     {
         return $this->belongsToMany(Subscription::class);
     }
+
+    public function checkIns()
+    {
+        return $this->hasMany(CheckIn::class);
+    }
 }

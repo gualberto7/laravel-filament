@@ -23,4 +23,9 @@ class Gym extends Model
     {
         return $this->hasMany(Membership::class);
     }
+
+    public function checkIns()
+    {
+        return $this->hasMany(CheckIn::class);
+    }
 }
