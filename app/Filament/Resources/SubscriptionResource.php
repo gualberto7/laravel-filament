@@ -90,6 +90,28 @@ class SubscriptionResource extends Resource
                             ->multiple()
                             ->pivotData([])
                             ->required(),
+                    ]),
+
+                
+                Forms\Components\Section::make('Datos de Pago')
+                    ->schema([
+                        Forms\Components\Repeater::make('Cuotas')
+                        ->columns([
+                            'sm' => 1,
+                            'md' => 3,
+                        ])
+                        ->relationship('payments')
+                        ->schema([
+                            Forms\Components\TextInput::make('amount')
+                                ->prefix('Bs.')
+                                ->required(),
+                            Forms\Components\Select::make('method')
+                                ->options([
+                                    'cash' => 'Efectivo',
+                                    'card' => 'Tarjeta',
+                                ])
+                                ->required(),
+                        ]),
                     ])
             ]);
     }
