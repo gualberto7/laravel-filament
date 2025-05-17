@@ -23,4 +23,15 @@ class Client extends Model
     {
         return $this->hasMany(CheckIn::class);
     }
+
+    public function addCheckIn($gym_id, $locker_number = null)
+    {
+        $checkIn = CheckIn::create([
+            'client_id' => $this->id,
+            'gym_id' => $gym_id,
+            'locker_number' => $locker_number,
+            'created_by' => auth()->user()->name,
+            'updated_by' => auth()->user()->name,
+        ]);
+    }
 }

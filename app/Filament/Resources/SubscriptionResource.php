@@ -16,6 +16,8 @@ use Filament\Forms\Set;
 use Filament\Forms\Get;
 use Carbon\Carbon;
 use App\Models\Client;
+use App\Models\CheckIn;
+use Filament\Notifications\Notification;
 
 class SubscriptionResource extends Resource
 {
@@ -121,6 +123,9 @@ class SubscriptionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->groups([
+                'membership.name'
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('clients.name')
                     ->searchable(['name', 'card_id']),
@@ -134,6 +139,29 @@ class SubscriptionResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('checkIn')
+                    ->label('Check-in')
+                    ->form([
+                        Forms\Components\TextInput::make('locker_number')
+                            ->label('Caja')
+                            ->required(),
+                        Forms\Components\CheckboxList::make('client_id')
+                            ->options(fn (Subscription $record) => $record->clients->pluck('name', 'id'))
+                            ->columns(2)
+                            ->required(),
+                    ])
+                    ->action(fn (Subscription $record, array $data) => [
+                        $record->clients->each(function (Client $client) use ($data, $record) {
+                            if (in_array($client->id, $data['client_id'])) {
+                                $client->addCheckIn($record->gym_id, $data['locker_number']);
+                            }
+                        }),
+                        Notification::make()
+                            ->title('Check-in realizado correctamente')
+                            ->success()
+                            ->send(),
+                    ]),
+
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
