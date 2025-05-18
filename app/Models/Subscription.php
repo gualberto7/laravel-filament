@@ -15,6 +15,8 @@ class Subscription extends Model
         'end_date' => 'datetime',
     ];
 
+    protected $appends = ['status'];
+
     public function membership()
     {
         return $this->belongsTo(Membership::class);
@@ -33,5 +35,21 @@ class Subscription extends Model
     public function payments()
     {
         return $this->hasMany(SubscriptionPayment::class);
+    }
+
+    public function getStatusAttribute()
+    {
+        $daysDiff = $this->end_date->diffInDays(now());
+
+        if ($daysDiff < 0) {
+            return 'expired';
+        }
+        if ($daysDiff === 0) {
+            return 'expires_today';
+        }
+        if ($daysDiff <= 3) {
+            return 'expires_soon';
+        }
+        return 'active';
     }
 }

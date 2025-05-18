@@ -130,10 +130,16 @@ class SubscriptionResource extends Resource
                 Tables\Columns\TextColumn::make('clients.name')
                     ->searchable(['name', 'card_id']),
                 Tables\Columns\TextColumn::make('membership.name'),
-                Tables\Columns\TextColumn::make('start_date')
-                    ->dateTime('d-m-Y'),
                 Tables\Columns\TextColumn::make('end_date')
                     ->dateTime('d-m-Y'),
+                Tables\Columns\TextColumn::make('status')
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'active' => 'success',
+                    'expires_soon' => 'warning',
+                    'expires_today' => 'danger',
+                    'expired' => 'gray',
+                })
             ])
             ->filters([
                 //
