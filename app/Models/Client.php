@@ -34,4 +34,18 @@ class Client extends Model
             'updated_by' => auth()->user()->name,
         ]);
     }
+
+    public function scopeActive($query)
+    {
+        return $query->whereHas('subscriptions', function ($q) {
+            $q->where('end_date', '>=', now());
+        });
+    }
+
+    public function scopeInactive($query)
+    {
+        return $query->whereHas('subscriptions', function ($q) {
+            $q->where('end_date', '<', now());
+        });
+    }
 }

@@ -46,9 +46,18 @@ class ClientResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('card_id'),
-                Tables\Columns\TextColumn::make('email'),
+                Tables\Columns\TextColumn::make('subscriptions.status')
+                    ->label('Suscripción')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'active' => 'success',
+                        'inactive' => 'danger',
+                        default => 'warning',
+                    }),
                 Tables\Columns\TextColumn::make('phone'),
             ])
             ->filters([

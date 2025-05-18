@@ -32,23 +32,24 @@ class CheckInResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                $query
+                    ->whereDate('created_at', now()->toDateString())
+                    ->orderByDesc('created_at');
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('client.name')
                     ->label('Cliente')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Fecha')
-                    ->dateTime('d/m/Y'),
-                Tables\Columns\TextColumn::make('created_at')
                     ->label('Hora')
                     ->dateTime('H:i')
-                    ->searchable(),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('locker_number')
                     ->label('Caja')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_by')
-                    ->label('Creado por')
-                    ->searchable(),
+                    ->label('Creado por'),
             ])
             ->filters([
                 //
