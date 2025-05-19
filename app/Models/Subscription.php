@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Subscription extends Model
 {
@@ -11,8 +12,8 @@ class Subscription extends Model
     use HasFactory;
 
     protected $casts = [
-        'start_date' => 'datetime',
-        'end_date' => 'datetime',
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
 
     protected $appends = ['status'];
@@ -39,8 +40,10 @@ class Subscription extends Model
 
     public function getStatusAttribute()
     {
-        $daysDiff = $this->end_date->diffInDays(now());
-
+        $now = Carbon::now()->startOfDay();
+        $endDate = $this->end_date->startOfDay();
+        $daysDiff = (int) $now->diffInDays($endDate, false);
+        
         if ($daysDiff < 0) {
             return 'expired';
         }
