@@ -100,22 +100,34 @@ class SubscriptionResource extends Resource
                 Forms\Components\Section::make('Datos de Pago')
                     ->schema([
                         Forms\Components\Repeater::make('Cuotas')
-                        ->columns([
-                            'sm' => 1,
-                            'md' => 3,
-                        ])
-                        ->relationship('payments')
-                        ->schema([
-                            Forms\Components\TextInput::make('amount')
-                                ->prefix('Bs.')
-                                ->required(),
-                            Forms\Components\Select::make('method')
-                                ->options([
-                                    'cash' => 'Efectivo',
-                                    'card' => 'Tarjeta',
-                                ])
-                                ->required(),
-                        ]),
+                            ->columns([
+                                'sm' => 1,
+                                'md' => 3,
+                            ])
+                            ->maxItems(function (Get $get): int {
+                                $membership = \App\Models\Membership::find($get('membership_id'));
+                                return $membership->max_installments ?? 1;
+                            })
+                            ->relationship('payments')
+                            ->itemLabel(function (Get $get): string {
+                                $membership = \App\Models\Membership::find($get('membership_id'));
+                                if (!$membership) {
+                                    return 'Seleccione una membresia';
+                                }
+                                return "Paga hasta en {$membership->max_installments} cuotas";
+                            })
+                            ->deletable(false)
+                            ->schema([
+                                Forms\Components\TextInput::make('amount')
+                                    ->prefix('Bs.')
+                                    ->required(),
+                                Forms\Components\Select::make('method')
+                                    ->options([
+                                        'cash' => 'Efectivo',
+                                        'card' => 'Tarjeta',
+                                    ])
+                                    ->required(),
+                            ]),
                     ])
             ]);
     }
