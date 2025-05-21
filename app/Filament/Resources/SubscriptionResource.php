@@ -41,7 +41,8 @@ class SubscriptionResource extends Resource
                             ->relationship('membership', 'name')
                             ->required()
                             ->live()
-                            ->afterStateUpdated(function (Set $set, $state) {
+                            ->disabledOn(['edit'])
+                            ->afterStateUpdated(function (Set $set, $state, Get $get) {
                                 if ($state) {
                                     $membership = \App\Models\Membership::find($state);
                                     if ($membership) {
@@ -56,6 +57,7 @@ class SubscriptionResource extends Resource
                         Forms\Components\DatePicker::make('start_date')
                             ->default(now())
                             ->live()
+                            ->disabledOn(['edit'])
                             ->afterStateUpdated(function (Set $set, Get $get, $state) {
                                 if ($state) {
                                     $membership = \App\Models\Membership::find($get('membership_id'));
@@ -93,13 +95,13 @@ class SubscriptionResource extends Resource
                             ->searchable(['name', 'card_id'])
                             ->multiple()
                             ->pivotData([])
-                            ->required(),
+                            ->required()
+                            ->disabledOn(['edit']),
                     ]),
-
                 
                 Forms\Components\Section::make('Datos de Pago')
                     ->schema([
-                        Forms\Components\Repeater::make('Cuotas')
+                        Forms\Components\Repeater::make('installments')
                             ->columns([
                                 'sm' => 1,
                                 'md' => 3,
@@ -109,23 +111,22 @@ class SubscriptionResource extends Resource
                                 return $membership->max_installments ?? 1;
                             })
                             ->relationship('payments')
-                            ->itemLabel(function (Get $get): string {
-                                $membership = \App\Models\Membership::find($get('membership_id'));
-                                if (!$membership) {
-                                    return 'Seleccione una membresia';
-                                }
-                                return "Paga hasta en {$membership->max_installments} cuotas";
-                            })
+                            ->label(fn (Get $get): string => self::updatePaymentStatus($get))
                             ->deletable(false)
                             ->schema([
                                 Forms\Components\TextInput::make('amount')
                                     ->prefix('Bs.')
+                                    ->live()
                                     ->required(),
                                 Forms\Components\Select::make('method')
                                     ->options([
                                         'cash' => 'Efectivo',
                                         'card' => 'Tarjeta',
                                     ])
+                                    ->required(),
+                                Forms\Components\DateTimePicker::make('created_at')
+                                    ->default(now())
+                                    ->readOnly()
                                     ->required(),
                             ]),
                     ])
@@ -154,7 +155,9 @@ class SubscriptionResource extends Resource
                 })
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('membership.name')
+                    ->relationship('membership', 'name')
+                    ->label('Membresia'),
             ])
             ->actions([
                 Tables\Actions\Action::make('checkIn')
@@ -203,5 +206,18 @@ class SubscriptionResource extends Resource
             'create' => Pages\CreateSubscription::route('/create'),
             'edit' => Pages\EditSubscription::route('/{record}/edit'),
         ];
+    }
+
+    public static function updatePaymentStatus($get)
+    {
+        $membership = \App\Models\Membership::find($get('membership_id'));
+        $installments = $get('installments');
+        $totalAmount = array_sum(array_map(function ($installment) {
+            return $installment['amount'];
+        }, $installments)) ?? 0;
+        if ($membership && $totalAmount) {
+            return "Pagado: " . $totalAmount . " de " . $membership->price;
+        }
+        return '';
     }
 }
