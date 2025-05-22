@@ -12,6 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 
 class ClientResource extends Resource
 {
@@ -21,6 +24,7 @@ class ClientResource extends Resource
     protected static ?string $navigationGroup = 'Gestion';
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
     {
@@ -64,6 +68,7 @@ class ClientResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -80,12 +85,61 @@ class ClientResource extends Resource
         ];
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('Cliente')
+                    ->description('Datos del cliente')
+                    ->headerActions([
+                        Infolists\Components\Actions\Action::make('edit')
+                            ->label('Editar')
+                            ->url(fn (Client $record): string => ClientResource::getUrl('edit', ['record' => $record])),
+                    ])
+                    ->schema([
+                        Infolists\Components\TextEntry::make('name'),
+                        Infolists\Components\TextEntry::make('card_id'),
+                        Infolists\Components\TextEntry::make('email'),
+                        Infolists\Components\TextEntry::make('phone'),
+                        Infolists\Components\TextEntry::make('created_at')
+                            ->dateTime('d-m-Y H:i')
+                    ])
+                    ->columns(2),
+
+                Infolists\Components\RepeatableEntry::make('subscriptions')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('status'),
+                        Infolists\Components\TextEntry::make('start_date')
+                            ->dateTime('d-m-Y H:i'),
+                        Infolists\Components\TextEntry::make('end_date')
+                            ->dateTime('d-m-Y H:i'),
+                        Infolists\Components\TextEntry::make('price')
+                            ->money('USD'),
+                    ])
+                    ->columns(2)
+                    ->grid(1),
+            ]);
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListClients::route('/'),
             'create' => Pages\CreateClient::route('/create'),
             'edit' => Pages\EditClient::route('/{record}/edit'),
+            'view' => Pages\ViewClient::route('/{record}'),
+        ];
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'card_id'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Carnet' => $record->card_id,
         ];
     }
 }
