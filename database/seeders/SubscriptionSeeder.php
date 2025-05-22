@@ -19,7 +19,9 @@ class SubscriptionSeeder extends Seeder
     {
         $gym = Gym::first();
         $memberships = Membership::all();
-        $clients = Client::factory()->count(30)->create();
+        $clients = Client::factory()->count(30)->create([
+            'gym_id' => $gym->id
+        ]);
 
         foreach ($clients as $client) {
             $membership = $memberships->random();

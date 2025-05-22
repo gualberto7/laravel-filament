@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             GymSeeder::class,
             MembershipSeeder::class,
-            ClientSeeder::class
+            ClientSeeder::class,
+            SubscriptionSeeder::class,
         ]);
     }
 }
