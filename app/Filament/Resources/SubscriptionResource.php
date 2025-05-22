@@ -94,7 +94,6 @@ class SubscriptionResource extends Resource
                             ->getOptionLabelFromRecordUsing(fn (Client $record) => $record->name . ' - ' . $record->card_id)
                             ->searchable(['name', 'card_id'])
                             ->multiple()
-                            ->pivotData([])
                             ->required()
                             ->disabledOn(['edit']),
                     ]),
