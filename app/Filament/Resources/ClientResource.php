@@ -93,7 +93,7 @@ class ClientResource extends Resource
                     ->description('Datos del cliente')
                     ->headerActions([
                         Infolists\Components\Actions\Action::make('edit')
-                            ->label('Editar')
+                            ->label('Editar Cliente')
                             ->url(fn (Client $record): string => ClientResource::getUrl('edit', ['record' => $record])),
                     ])
                     ->schema([
@@ -106,18 +106,27 @@ class ClientResource extends Resource
                     ])
                     ->columns(2),
 
-                Infolists\Components\RepeatableEntry::make('subscriptions')
-                    ->schema([
-                        Infolists\Components\TextEntry::make('status'),
-                        Infolists\Components\TextEntry::make('start_date')
-                            ->dateTime('d-m-Y H:i'),
-                        Infolists\Components\TextEntry::make('end_date')
-                            ->dateTime('d-m-Y H:i'),
-                        Infolists\Components\TextEntry::make('price')
-                            ->money('USD'),
+                Infolists\Components\Section::make('Suscripciones')
+                    ->description('Subscripciones actuales del cliente, para ver el historial de suscripciones, haga click aquí')
+                    ->headerActions([
+                        Infolists\Components\Actions\Action::make('create')
+                            ->label('Crear Suscripción')
+                            ->url(fn (Client $record): string => ClientResource::getUrl('create', ['record' => $record])),
                     ])
-                    ->columns(2)
-                    ->grid(1),
+                    ->schema([
+                        Infolists\Components\RepeatableEntry::make('subscriptions')
+                            ->label('')
+                            ->schema([
+                                Infolists\Components\TextEntry::make('status'),
+                                Infolists\Components\TextEntry::make('start_date')
+                                    ->dateTime('d-m-Y H:i'),
+                                Infolists\Components\TextEntry::make('end_date')
+                                    ->dateTime('d-m-Y H:i'),
+                                Infolists\Components\TextEntry::make('price')
+                                    ->money('USD'),
+                            ]),
+                    ])
+                    ->columns(2),
             ]);
     }
 
