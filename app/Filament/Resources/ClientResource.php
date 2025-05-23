@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
+use App\Livewire\CheckIn\Index;
 
 class ClientResource extends Resource
 {
@@ -116,17 +117,36 @@ class ClientResource extends Resource
                     ->schema([
                         Infolists\Components\RepeatableEntry::make('subscriptions')
                             ->label('')
+                            ->columns(2)
                             ->schema([
-                                Infolists\Components\TextEntry::make('status'),
+                                Infolists\Components\TextEntry::make('status')
+                                    ->badge()
+                                    ->color(fn (string $state): string => match ($state) {
+                                        'active' => 'success',
+                                        'expires_soon' => 'warning',
+                                        'expires_today' => 'danger',
+                                        'expired' => 'gray',
+                                    }),
                                 Infolists\Components\TextEntry::make('start_date')
-                                    ->dateTime('d-m-Y H:i'),
+                                    ->dateTime('d-m-Y'),
                                 Infolists\Components\TextEntry::make('end_date')
-                                    ->dateTime('d-m-Y H:i'),
+                                    ->dateTime('d-m-Y'),
                                 Infolists\Components\TextEntry::make('price')
-                                    ->money('USD'),
-                            ]),
+                                    ->prefix('Bs. '),
+                            ])
+                            ->grid(2),
+                    ]),
+
+                Infolists\Components\Section::make('Check-in')
+                    ->description('Check-in del cliente')
+                    ->headerActions([
+                        Infolists\Components\Actions\Action::make('create')
+                            ->label('Ver todos los check-in')
+                            ->url(fn (Client $record): string => ClientResource::getUrl('view', ['record' => $record])),
                     ])
-                    ->columns(2),
+                    ->schema([
+                        Infolists\Components\Livewire::make(Index::class)
+                    ]),
             ]);
     }
 
