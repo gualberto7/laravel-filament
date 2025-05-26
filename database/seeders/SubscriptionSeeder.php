@@ -17,7 +17,8 @@ class SubscriptionSeeder extends Seeder
      */
     public function run(): void
     {
-        $gym = Gym::first();
+        $gym = Gym::where('email', 'gym1@example.com')->first();
+        
         $memberships = Membership::all();
         $clients = Client::factory()->count(30)->create([
             'gym_id' => $gym->id

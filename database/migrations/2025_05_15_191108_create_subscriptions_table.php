@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subscriptions', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->date('start_date');
             $table->date('end_date');
             $table->string('created_by');
             $table->string('updated_by');
             $table->decimal('price', 10, 2);
-            $table->foreignId('membership_id')->constrained();
-            $table->foreignId('gym_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('membership_id')->constrained();
+            $table->foreignUuid('gym_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

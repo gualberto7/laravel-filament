@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subscription_payments', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->decimal('amount', 10, 2);
             $table->enum('method', ['cash', 'card', 'bank_transfer', 'cheque'])->default('cash');
             $table->enum('status', ['pending', 'paid', 'failed'])->default('paid');
             $table->string('notes')->nullable();
-            $table->foreignId('subscription_id')->constrained('subscriptions');
+            $table->foreignUuid('subscription_id')->constrained('subscriptions');
             $table->timestamps();
         });
     }
