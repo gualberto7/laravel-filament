@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use App\Models\Traits\BelongsToGym;
 
 class Subscription extends Model
 {
     /** @use HasFactory<\Database\Factories\SubscriptionFactory> */
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, BelongsToGym;
 
     protected $casts = [
         'start_date' => 'date',

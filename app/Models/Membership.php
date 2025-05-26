@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Carbon\Carbon;
+use App\Models\Traits\BelongsToGym;
 
 class Membership extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, BelongsToGym;
 
     protected $casts = [
         'active' => 'boolean',

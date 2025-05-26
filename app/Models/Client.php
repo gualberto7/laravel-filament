@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Models\Traits\BelongsToGym;
 
 class Client extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, BelongsToGym;
 
     public function gym()
     {
