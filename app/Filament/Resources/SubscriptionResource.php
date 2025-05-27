@@ -85,7 +85,7 @@ class SubscriptionResource extends Resource
                                     ->required()
                                     ->maxLength(255),
                             ])
-                            ->createOptionUsing(function (array $data): int {
+                            ->createOptionUsing(function (array $data): string {
                                 $client = Client::create($data + [
                                     'gym_id' => auth()->user()->gym->id,
                                 ]);
