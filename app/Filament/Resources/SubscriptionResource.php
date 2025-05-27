@@ -18,6 +18,8 @@ use Carbon\Carbon;
 use App\Models\Client;
 use App\Models\CheckIn;
 use Filament\Notifications\Notification;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 
 class SubscriptionResource extends Resource
 {
@@ -182,12 +184,54 @@ class SubscriptionResource extends Resource
                             ->send(),
                     ]),
 
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('Datos de la Suscripción')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('clients.name'),
+                        Infolists\Components\TextEntry::make('membership.name'),
+                        Infolists\Components\TextEntry::make('status')
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'active' => 'success',
+                                'expires_soon' => 'warning',
+                                'expires_today' => 'danger',
+                                'expired' => 'gray',
+                            }),
+                        Infolists\Components\TextEntry::make('start_date')
+                            ->dateTime('d-m-Y'),
+                        Infolists\Components\TextEntry::make('end_date')
+                            ->dateTime('d-m-Y'),
+                        Infolists\Components\TextEntry::make('price'),
+                        Infolists\Components\TextEntry::make('created_by'),
+                        Infolists\Components\TextEntry::make('updated_by'),
+                    ])
+                    ->columns(3),
+
+                Infolists\Components\Section::make('Pagos')
+                    ->schema([
+                        Infolists\Components\RepeatableEntry::make('payments')
+                            ->label('')
+                            ->columns(3)
+                            ->schema([
+                                Infolists\Components\TextEntry::make('amount'),
+                                Infolists\Components\TextEntry::make('method'),
+                                Infolists\Components\TextEntry::make('created_at')
+                                    ->dateTime('d-m-Y'),
+                            ]),
+                    ]),
             ]);
     }
 
@@ -204,6 +248,7 @@ class SubscriptionResource extends Resource
             'index' => Pages\ListSubscriptions::route('/'),
             'create' => Pages\CreateSubscription::route('/create'),
             'edit' => Pages\EditSubscription::route('/{record}/edit'),
+            'view' => Pages\ViewSubscription::route('/{record}'),
         ];
     }
 
