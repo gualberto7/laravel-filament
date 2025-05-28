@@ -82,10 +82,14 @@ class MembershipResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('price'),
-                Tables\Columns\TextColumn::make('duration'),
-                Tables\Columns\TextColumn::make('max_installments'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Membresía'),
+                Tables\Columns\TextColumn::make('price')
+                    ->label('Precio Bs.'),
+                Tables\Columns\TextColumn::make('duration')
+                    ->label('Duración días'),
+                Tables\Columns\TextColumn::make('max_installments')
+                    ->label('Paga en cuotas')
             ])
             ->filters([
                 //

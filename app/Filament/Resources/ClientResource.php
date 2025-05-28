@@ -103,9 +103,13 @@ class ClientResource extends Resource
                         Infolists\Components\TextEntry::make('email'),
                         Infolists\Components\TextEntry::make('phone'),
                         Infolists\Components\TextEntry::make('created_at')
-                            ->dateTime('d-m-Y H:i')
+                            ->dateTime('d-m-Y H:i'),
+                        Infolists\Components\TextEntry::make('updated_at')
+                            ->dateTime('d-m-Y H:i'),
+                        Infolists\Components\TextEntry::make('created_by'),
+                        Infolists\Components\TextEntry::make('updated_by'),
                     ])
-                    ->columns(2),
+                    ->columns(3),
 
                 Infolists\Components\Section::make('Suscripciones')
                     ->description('Subscripciones actuales del cliente, para ver el historial de suscripciones, haga click aquí')

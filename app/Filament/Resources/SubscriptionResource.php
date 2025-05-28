@@ -47,9 +47,16 @@ class SubscriptionResource extends Resource
                             ->afterStateUpdated(function (Set $set, $state, Get $get) {
                                 if ($state) {
                                     $membership = \App\Models\Membership::find($state);
+                                    $installments = $get('installments');
                                     if ($membership) {
                                         $set('end_date', now()->addDays($membership->duration)->format('Y-m-d'));
                                         $set('price', $membership->price);
+                                        
+                                        $firstInstallmentKey = array_key_first($installments);
+                                        if ($firstInstallmentKey) {
+                                            $installments[$firstInstallmentKey]['amount'] = $membership->price / $membership->max_installments;
+                                            $set('installments', $installments);
+                                        }
                                     }
                                 }
                             }),
@@ -107,13 +114,13 @@ class SubscriptionResource extends Resource
                                 'sm' => 1,
                                 'md' => 3,
                             ])
+                            ->minItems(1)
                             ->maxItems(function (Get $get): int {
                                 $membership = \App\Models\Membership::find($get('membership_id'));
                                 return $membership->max_installments ?? 1;
                             })
                             ->relationship('payments')
                             ->label(fn (Get $get): string => self::updatePaymentStatus($get))
-                            ->deletable(false)
                             ->schema([
                                 Forms\Components\TextInput::make('amount')
                                     ->prefix('Bs.')
@@ -129,7 +136,9 @@ class SubscriptionResource extends Resource
                                     ->default(now())
                                     ->readOnly()
                                     ->required(),
-                            ]),
+                            ])
+                            ->cloneable()
+                            ->addActionLabel('Agregar Pago'),
                     ])
             ]);
     }
@@ -185,7 +194,6 @@ class SubscriptionResource extends Resource
                     ]),
 
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -199,6 +207,11 @@ class SubscriptionResource extends Resource
         return $infolist
             ->schema([
                 Infolists\Components\Section::make('Datos de la Suscripción')
+                    ->headerActions([
+                        Infolists\Components\Actions\Action::make('edit')
+                            ->label('Editar')
+                            ->url(fn (Subscription $record): string => SubscriptionResource::getUrl('edit', ['record' => $record])),
+                    ])
                     ->schema([
                         Infolists\Components\TextEntry::make('clients.name'),
                         Infolists\Components\TextEntry::make('membership.name'),
