@@ -40,6 +40,15 @@ class MembershipResource extends Resource
                     ->numeric(),
                 Forms\Components\TextInput::make('max_installments')
                     ->label('Paga en cuotas')
+                    ->hint(function ($state, Get $get): string {
+                        $price = $get('price');
+                        if ($price) {
+                            $installments = $price / $state;
+                            return 'Paga en ' . $state . ' cuotas de ' . $installments . ' Bs.';
+                        }
+                        return '';
+                    })
+                    ->live()
                     ->required()
                     ->numeric()
                     ->default(1),

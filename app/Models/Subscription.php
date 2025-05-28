@@ -19,7 +19,7 @@ class Subscription extends Model
         'end_date' => 'date',
     ];
 
-    protected $appends = ['status'];
+    protected $appends = ['status', 'total_paid'];
 
     public function membership()
     {
@@ -57,5 +57,10 @@ class Subscription extends Model
             return 'expires_soon';
         }
         return 'active';
+    }
+
+    public function getTotalPaidAttribute()
+    {
+        return $this->payments->sum('amount');
     }
 }

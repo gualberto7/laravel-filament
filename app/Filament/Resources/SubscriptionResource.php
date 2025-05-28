@@ -202,6 +202,11 @@ class SubscriptionResource extends Resource
                     ->schema([
                         Infolists\Components\TextEntry::make('clients.name'),
                         Infolists\Components\TextEntry::make('membership.name'),
+                        Infolists\Components\TextEntry::make('total_paid')
+                            ->label('Total Pagado')
+                            ->prefix('Bs. ')
+                            ->color(fn (string $state, $record): string => $state >= $record->price ? 'success' : 'warning')
+                            ->hint(fn (string $state, $record): string => $state >= $record->price ? 'Pago Completo' : 'Pago Pendiente'),
                         Infolists\Components\TextEntry::make('status')
                             ->badge()
                             ->color(fn (string $state): string => match ($state) {
@@ -221,15 +226,39 @@ class SubscriptionResource extends Resource
                     ->columns(3),
 
                 Infolists\Components\Section::make('Pagos')
+                    ->headerActions([
+                        Infolists\Components\Actions\Action::make('addPayment')
+                            ->label('Agregar Pago')
+                            ->form([
+                                Forms\Components\TextInput::make('amount')
+                                    ->prefix('Bs.')
+                                    ->required(),
+                                Forms\Components\Select::make('method')
+                                    ->options([
+                                        'cash' => 'Efectivo',
+                                        'card' => 'Tarjeta',
+                                    ])
+                                    ->required(),
+                            ])
+                            ->action(function (array $data, Subscription $record) {
+                                $record->payments()->create($data);
+                                Notification::make()
+                                    ->title('Pago agregado correctamente')
+                                    ->success()
+                                    ->send();
+                            })
+                            ->modalWidth('md')
+                    ])
                     ->schema([
                         Infolists\Components\RepeatableEntry::make('payments')
                             ->label('')
-                            ->columns(3)
+                            ->columns(4)
                             ->schema([
                                 Infolists\Components\TextEntry::make('amount'),
                                 Infolists\Components\TextEntry::make('method'),
                                 Infolists\Components\TextEntry::make('created_at')
-                                    ->dateTime('d-m-Y'),
+                                    ->dateTime('d-m-Y H:i'),
+                                Infolists\Components\TextEntry::make('created_by'),
                             ]),
                     ]),
             ]);
