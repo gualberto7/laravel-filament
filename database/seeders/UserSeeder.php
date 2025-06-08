@@ -17,5 +17,25 @@ class UserSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@test.com'
         ]);
+
+        User::factory()->create([
+            'name' => 'Administrador',
+            'email' => 'admin1@test.com'
+        ]);
+
+        User::factory()->create([
+            'name' => 'Trainer',
+            'email' => 'trainer@test.com'
+        ]);
+
+        User::factory()->create([
+            'name' => 'Owner',
+            'email' => 'owner@test.com'
+        ]);
+
+        User::factory()->create([
+            'name' => 'Trainer 1',
+            'email' => 'trainer1@test.com'
+        ]);
     }
 }
