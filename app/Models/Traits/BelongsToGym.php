@@ -9,7 +9,7 @@ trait BelongsToGym
     protected static function booted()
     {
         static::addGlobalScope('gym', function (Builder $builder) {
-            $builder->where('gym_id', auth()->user()->gym->id);
+            $builder->where('gym_id', auth()->user()->ownedGym->id);
         });
     }
 } 
