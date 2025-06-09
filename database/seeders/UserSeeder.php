@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Gym;
 
 class UserSeeder extends Seeder
 {
@@ -13,29 +14,27 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@test.com'
-        ]);
+        $gym = Gym::where('email', 'gym1@example.com')->first();
 
         User::factory()->create([
             'name' => 'Administrador',
-            'email' => 'admin1@test.com'
+            'username' => 'admin1',
+            'email' => 'admin1@test.com',
+            'gym_id' => $gym->id
         ]);
 
         User::factory()->create([
             'name' => 'Trainer',
-            'email' => 'trainer@test.com'
+            'username' => 'trainer',
+            'email' => 'trainer@test.com',
+            'gym_id' => $gym->id
         ]);
 
         User::factory()->create([
-            'name' => 'Owner',
-            'email' => 'owner@test.com'
-        ]);
-
-        User::factory()->create([
-            'name' => 'Trainer 1',
-            'email' => 'trainer1@test.com'
+            'name' => 'Instructor',
+            'username' => 'instructor',
+            'email' => 'instructor@test.com',
+            'gym_id' => $gym->id
         ]);
     }
 }

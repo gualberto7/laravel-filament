@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Gym extends Model
 {
@@ -24,26 +24,14 @@ class Gym extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function staff(): BelongsToMany
+    public function staff(): HasMany
     {
-        return $this->belongsToMany(User::class)
-            ->withPivot(['role', 'permissions', 'is_active'])
-            ->withTimestamps();
+        return $this->hasMany(User::class);
     }
 
     public function activeStaff(): BelongsToMany
     {
-        return $this->staff()->wherePivot('is_active', true);
-    }
-
-    public function admins(): BelongsToMany
-    {
-        return $this->staff()->wherePivot('role', 'admin');
-    }
-
-    public function trainers(): BelongsToMany
-    {
-        return $this->staff()->wherePivot('role', 'trainer');
+        return $this->staff()->where('is_active', true);
     }
 
     public function clients()
