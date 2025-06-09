@@ -15,9 +15,9 @@ class GymSeeder extends Seeder
     public function run(): void
     {
         $user = User::factory()->create([
-            'name' => 'Admin',
-            'username' => 'admingc7',
-            'email' => 'admin@test.com'
+            'name' => 'Owner',
+            'username' => 'owner',
+            'email' => 'owner@test.com'
         ]);
 
         $gym = Gym::factory()->create([
@@ -26,6 +26,20 @@ class GymSeeder extends Seeder
             'phone' => '1234567890',
             'email' => 'gym1@example.com',
             'user_id' => $user->id
+        ]);
+
+        $user2 = User::factory()->create([
+            'name' => 'Owner 2',
+            'username' => 'owner2',
+            'email' => 'owner2@test.com'
+        ]);
+
+        $gym2 = Gym::factory()->create([
+            'name' => 'Gym 2',
+            'address' => '123 Main St',
+            'phone' => '1234567890',
+            'email' => 'gym2@example.com',
+            'user_id' => $user2->id
         ]);
     }
 }

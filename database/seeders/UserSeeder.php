@@ -17,9 +17,9 @@ class UserSeeder extends Seeder
         $gym = Gym::where('email', 'gym1@example.com')->first();
 
         User::factory()->create([
-            'name' => 'Administrador',
-            'username' => 'admin1',
-            'email' => 'admin1@test.com',
+            'name' => 'Admin',
+            'username' => 'admin',
+            'email' => 'admin@test.com',
             'gym_id' => $gym->id
         ]);
 
@@ -35,6 +35,29 @@ class UserSeeder extends Seeder
             'username' => 'instructor',
             'email' => 'instructor@test.com',
             'gym_id' => $gym->id
+        ]);
+
+        $gym2 = Gym::where('email', 'gym2@example.com')->first();
+
+        User::factory()->create([
+            'name' => 'Admin 2',
+            'username' => 'admin2',
+            'email' => 'admin2@test.com',
+            'gym_id' => $gym2->id
+        ]);
+
+        User::factory()->create([
+            'name' => 'Trainer 2',
+            'username' => 'trainer2',
+            'email' => 'trainer2@test.com',
+            'gym_id' => $gym2->id
+        ]);
+
+        User::factory()->create([
+            'name' => 'Instructor 2',
+            'username' => 'instructor2',
+            'email' => 'instructor2@test.com',
+            'gym_id' => $gym2->id
         ]);
     }
 }
