@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Traits\HasPreferences;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasUuids, HasRoles;
+    use HasFactory, Notifiable, HasUuids, HasRoles, HasPreferences;
 
     /**
      * The attributes that are mass assignable.
@@ -59,5 +60,32 @@ class User extends Authenticatable
     public function ownedGym() : HasOne
     {
         return $this->hasOne(Gym::class);
+    }
+
+    public function setCurrentGym()
+    {
+        $gym = $this->ownedGym;
+
+        if (!$gym) {
+            $gym = $this->gym;
+        }
+
+        if (!$gym) {
+            throw new \Exception('User does not have an owned gym or gym');
+        }
+
+        $this->setPreference('current_gym', $gym->id);
+    }
+
+    public function getCurrentGymId()
+    {
+        $gymId = $this->getPreference('current_gym');
+
+        if (!$gymId) {
+            $this->setCurrentGym();
+            return $this->getPreference('current_gym');
+        }
+
+        return $gymId;
     }
 }

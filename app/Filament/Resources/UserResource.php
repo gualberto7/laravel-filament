@@ -89,7 +89,7 @@ class UserResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with('roles')->where('gym_id', auth()->user()->ownedGym->id);
+        return parent::getEloquentQuery()->with('roles')->where('gym_id', auth()->user()->getCurrentGymId());
     }
 
     public static function getPages(): array

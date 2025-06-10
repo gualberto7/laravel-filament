@@ -96,7 +96,7 @@ class SubscriptionResource extends Resource
                             ])
                             ->createOptionUsing(function (array $data): string {
                                 $client = Client::create($data + [
-                                    'gym_id' => auth()->user()->gym->id,
+                                    'gym_id' => auth()->user()->getCurrentGymId(),
                                 ]);
                                 return $client->id;
                             })

@@ -12,7 +12,7 @@ class CreateClient extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['gym_id'] = auth()->user()->gym->id;
+        $data['gym_id'] = auth()->user()->getCurrentGymId();
         
         return $data;
     }
