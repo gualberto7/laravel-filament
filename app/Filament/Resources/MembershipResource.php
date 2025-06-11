@@ -41,6 +41,8 @@ class MembershipResource extends Resource
                     ->prefix('Días')
                     ->required()
                     ->numeric(),
+                Forms\Components\Checkbox::make('active')
+                    ->label('Activo?'),
                 Forms\Components\TextInput::make('max_installments')
                     ->label('Paga en cuotas')
                     ->hint(function ($state, Get $get): string {
@@ -131,6 +133,11 @@ class MembershipResource extends Resource
                             ->badge()
                             ->color(fn (string $state): string => $state ? 'success' : 'gray')
                             ->formatStateUsing(fn (string $state): string => $state ? 'Promoción' : 'Normal'),
+                        Infolists\Components\TextEntry::make('is_active')
+                            ->label('Estado')
+                            ->badge()
+                            ->color(fn (string $state): string => $state ? 'success' : 'danger')
+                            ->formatStateUsing(fn (string $state): string => $state ? 'Activo' : 'Inactivo'),
                         Infolists\Components\TextEntry::make('price')
                             ->label('Precio Bs.')
                             ->prefix('Bs.'),
