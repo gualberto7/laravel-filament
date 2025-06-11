@@ -13,6 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Get;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
+use Illuminate\Database\Eloquent\Model;
 
 class MembershipResource extends Resource
 {
@@ -100,12 +103,59 @@ class MembershipResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('Membresía')
+                    ->description('Datos de la Membresía / Promoción')
+                    ->headerActions([
+                        Infolists\Components\Actions\Action::make('edit')
+                            ->label('Editar Membresía')
+                            ->url(fn (Membership $record): string => MembershipResource::getUrl('edit', ['record' => $record])),
+                    ])
+                    ->schema([
+                        Infolists\Components\TextEntry::make('name'),
+                        Infolists\Components\TextEntry::make('is_promo')
+                            ->label('Tipo')
+                            ->badge()
+                            ->color(fn (string $state): string => $state ? 'success' : 'gray')
+                            ->formatStateUsing(fn (string $state): string => $state ? 'Promoción' : 'Normal'),
+                        Infolists\Components\TextEntry::make('price')
+                            ->label('Precio Bs.')
+                            ->prefix('Bs.'),
+                        Infolists\Components\TextEntry::make('promo_start_date')
+                            ->label('Fecha de inicio de promo')
+                            ->dateTime('d-m-Y')
+                            ->visible(function (Model $record): bool {
+                                return $record->is_promo && $record->promo_start_date;
+                            }),
+                        Infolists\Components\TextEntry::make('promo_end_date')
+                            ->label('Fecha de fin de promo')
+                            ->dateTime('d-m-Y')
+                            ->visible(function (Model $record): bool {
+                                return $record->is_promo && $record->promo_end_date;
+                            }),
+                        Infolists\Components\TextEntry::make('duration')
+                            ->label('Duración días'),
+                        Infolists\Components\TextEntry::make('max_installments')
+                            ->label('Paga en cuotas'),
+                        Infolists\Components\TextEntry::make('max_checkins')
+                            ->label('Máximo de entradas'),
+                        Infolists\Components\TextEntry::make('max_clients')
+                            ->label('Máximo de clientes'),
+                    ])
+                    ->columns(3),
             ]);
     }
 
@@ -122,6 +172,7 @@ class MembershipResource extends Resource
             'index' => Pages\ListMemberships::route('/'),
             'create' => Pages\CreateMembership::route('/create'),
             'edit' => Pages\EditMembership::route('/{record}/edit'),
+            'view' => Pages\ViewMembership::route('/{record}'),
         ];
     }
 }
