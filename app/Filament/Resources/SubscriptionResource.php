@@ -104,7 +104,8 @@ class SubscriptionResource extends Resource
                             ->searchable(['name', 'card_id'])
                             ->multiple()
                             ->required()
-                            ->disabledOn(['edit']),
+                            ->disabledOn(['edit'])
+                            ->minItems(1),
                     ]),
                 
                 Forms\Components\Section::make('Datos de Pago')

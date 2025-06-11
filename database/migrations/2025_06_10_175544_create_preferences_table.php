@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('preferences', function (Blueprint $table) {
             $table->id();
-            $table->string('key')->unique();
+            $table->string('key');
             $table->text('value')->nullable();
             $table->uuidMorphs('preferable');
             $table->timestamps();
+
+            $table->unique(['key', 'preferable_id', 'preferable_type']);
         });
     }
 

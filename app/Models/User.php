@@ -75,6 +75,8 @@ class User extends Authenticatable
         }
 
         $this->setPreference('current_gym', $gym->id);
+
+        return $gym->id;
     }
 
     public function getCurrentGymId()
