@@ -154,6 +154,12 @@ class MembershipResource extends Resource
                             ->label('Máximo de entradas'),
                         Infolists\Components\TextEntry::make('max_clients')
                             ->label('Máximo de clientes'),
+                        Infolists\Components\TextEntry::make('created_at')
+                            ->label('Fecha de creación')
+                            ->dateTime('d-m-Y H:i'),
+                        Infolists\Components\TextEntry::make('updated_at')
+                            ->label('Fecha de actualización')
+                            ->dateTime('d-m-Y H:i'),
                     ])
                     ->columns(3),
             ]);
