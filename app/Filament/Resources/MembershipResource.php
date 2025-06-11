@@ -83,14 +83,19 @@ class MembershipResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Membresía'),
+                    ->label('Nombre'),
                 Tables\Columns\TextColumn::make('price')
-                    ->label('Precio Bs.'),
+                    ->label('Precio Bs.')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('duration')
                     ->label('Duración días'),
-                Tables\Columns\TextColumn::make('max_installments')
-                    ->label('Paga en cuotas')
+                Tables\Columns\TextColumn::make('is_promo')
+                    ->label('Tipo')
+                    ->badge()
+                    ->color(fn (string $state): string => $state ? 'success' : 'gray')
+                    ->formatStateUsing(fn (string $state): string => $state ? 'Promoción' : 'Normal'),
             ])
+            ->defaultSort('price', 'asc')
             ->filters([
                 //
             ])
