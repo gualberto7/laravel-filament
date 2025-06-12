@@ -50,4 +50,9 @@ class Client extends Model
             $q->where('end_date', '<', now());
         });
     }
+
+    public function scopeNew($query)
+    {
+        return $query->where('created_at', '<=', now())->where('created_at', '>=', now()->subDays(30));
+    }
 }
