@@ -16,9 +16,12 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use App\Livewire\CheckIn\Index;
+use App\Filament\Traits\HasPagination;
 
 class ClientResource extends Resource
 {
+    use HasPagination;
+
     protected static ?string $model = Client::class;
 
     protected static ?string $navigationLabel = 'Clientes';
@@ -49,7 +52,7 @@ class ClientResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return static::applyPagination($table)
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()

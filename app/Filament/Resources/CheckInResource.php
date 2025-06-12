@@ -14,9 +14,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\SelectFilter;
 use Carbon\Carbon;
+use App\Filament\Traits\HasPagination;
 
 class CheckInResource extends Resource
 {
+    use HasPagination;
+
     protected static ?string $model = CheckIn::class;
 
     protected static ?string $navigationLabel = 'Check-ins';
@@ -33,7 +36,7 @@ class CheckInResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return static::applyPagination($table)
             ->modifyQueryUsing(function (Builder $query) {
                 $query
                     ->orderByDesc('created_at');

@@ -20,9 +20,12 @@ use App\Models\CheckIn;
 use Filament\Notifications\Notification;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
+use App\Filament\Traits\HasPagination;
 
 class SubscriptionResource extends Resource
 {
+    use HasPagination;
+
     protected static ?string $model = Subscription::class;
 
     protected static ?string $navigationLabel = 'Suscripciones';
@@ -146,7 +149,7 @@ class SubscriptionResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return static::applyPagination($table)
             ->groups([
                 'membership.name'
             ])

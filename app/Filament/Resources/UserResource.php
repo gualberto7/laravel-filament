@@ -14,9 +14,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
 use Spatie\Permission\Models\Role;
+use App\Filament\Traits\HasPagination;
 
 class UserResource extends Resource
 {
+    use HasPagination;
+
     protected static ?string $model = User::class;
 
     protected static ?string $navigationLabel = 'Usuarios';
@@ -61,7 +64,7 @@ class UserResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return static::applyPagination($table)
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('email'),
