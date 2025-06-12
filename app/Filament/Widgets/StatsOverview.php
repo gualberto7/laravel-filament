@@ -15,17 +15,17 @@ class StatsOverview extends BaseWidget
             Stat::make('Actividad', CheckIn::today()->count())
                 ->description('Ingresos al Gimnasio hoy')
                 ->descriptionIcon('heroicon-o-check-circle')
-                ->color('info'),
+                ->color('success'),
 
             Stat::make('Clientes activos', Client::active()->count())
                 ->description('Clientes con suscripción activa')
                 ->descriptionIcon('heroicon-o-user-group')
-                ->color('success'),
+                ->color('primary'),
 
             Stat::make('Nuevos clientes', Client::new()->count())
                 ->description('Nuevos clientes este mes')
                 ->descriptionIcon('heroicon-o-user-plus')
-                ->color('primary'),
+                ->color('success'),
         ];
     }
 }
