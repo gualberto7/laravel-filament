@@ -7,6 +7,7 @@ use Livewire\Component;
 use Filament\Forms\Form;
 use App\Enums\GymPreferences;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Forms\Concerns\InteractsWithForms;
 
 class Settings extends Component implements HasForms
@@ -52,6 +53,11 @@ class Settings extends Component implements HasForms
             }
             $item->save();
         });
+
+        Notification::make()
+            ->title('Cambios guardados')
+            ->success()
+            ->send();
     }
 
     public function render()
