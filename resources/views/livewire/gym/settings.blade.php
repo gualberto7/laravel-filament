@@ -1,9 +1,11 @@
 <div>
-    <form wire:submit="create">
+    <form wire:submit="update">
         {{ $this->form }}
         
-        <button type="submit">
-            Submit
-        </button>
+        <div class="flex justify-end mt-6">
+            <x-filament::button color="primary" type="submit">
+                Guardar cambios
+            </x-filament::button>
+        </div>
     </form>
 </div>
