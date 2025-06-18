@@ -6,6 +6,7 @@ use Filament\Forms;
 use Livewire\Component;
 use Filament\Forms\Form;
 use App\Enums\GymPreferences;
+use Livewire\Attributes\Computed;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -16,6 +17,7 @@ class Settings extends Component implements HasForms
 
     public $currentGym;
     public $preferences;
+    public $initialState = [];
     public $data = [];
 
     public function mount($currentGym)
@@ -30,6 +32,8 @@ class Settings extends Component implements HasForms
         $this->form->fill([
             'preferences' => $preferences,
         ]);
+
+        $this->initialState = $this->form->getState();
     }
 
     public function form(Form $form): Form
@@ -38,7 +42,8 @@ class Settings extends Component implements HasForms
             ->schema([
                 Forms\Components\CheckboxList::make('preferences')
                     ->options(GymPreferences::class)
-                    ->label(''),
+                    ->label('')
+                    ->live(),
             ])
             ->statePath('data');
     }
@@ -58,6 +63,12 @@ class Settings extends Component implements HasForms
             ->title('Cambios guardados')
             ->success()
             ->send();
+    }
+
+    #[Computed]
+    public function isDirty()
+    {
+        return $this->initialState == $this->form->getState();
     }
 
     public function render()
