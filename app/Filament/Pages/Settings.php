@@ -19,7 +19,9 @@ class Settings extends Page implements HasInfolists, HasForms
     use InteractsWithInfolists;
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
+    protected static ?string $navigationLabel = 'Gimnasio';
+    protected static ?string $navigationGroup = 'Configuración';
 
     protected static string $view = 'filament.pages.settings';
 
