@@ -176,6 +176,9 @@ class SubscriptionResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('checkIn')
                     ->label('Check-in')
+                    ->fillForm(fn (Subscription $record) => [
+                        'client_id' => $record->clients->pluck('id'),
+                    ])
                     ->form([
                         Forms\Components\TextInput::make('locker_number')
                             ->label('Caja')
@@ -195,7 +198,8 @@ class SubscriptionResource extends Resource
                             ->title('Check-in realizado correctamente')
                             ->success()
                             ->send(),
-                    ]),
+                    ])
+                    ->modalWidth('md'),
 
                 Tables\Actions\ViewAction::make(),
             ])
