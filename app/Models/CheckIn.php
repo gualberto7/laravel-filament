@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use App\Models\Traits\BelongsToGym;
+use Carbon\Carbon;
 
 class CheckIn extends Model
 {
@@ -24,6 +25,6 @@ class CheckIn extends Model
 
     public function scopeToday($query)
     {
-        return $query->where('created_at', '<=', now())->where('created_at', '>=', now()->subDay());
+        return $query->whereDate('created_at', Carbon::today());
     }
 }
