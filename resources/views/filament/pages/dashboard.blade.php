@@ -9,7 +9,7 @@
         </x-slot>
 
         <div class="w-1/2 mx-auto flex flex-col">
-            {{ $this->form }}
+            <livewire:client.search :current-gym="$currentGym" />
         </div>
     </x-filament::section>
 </x-filament-panels::page>
