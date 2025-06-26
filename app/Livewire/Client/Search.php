@@ -3,17 +3,23 @@
 namespace App\Livewire\Client;
 
 use App\Models\Client;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Livewire\Component;
-use Filament\Forms;
-use Filament\Notifications\Notification;
-use Livewire\Attributes\Computed;
+use App\Models\Subscription;
 
-class Search extends Component implements HasForms
+use Filament\Forms;
+use Livewire\Component;
+use Filament\Infolists;
+use Filament\Forms\Form;
+use Filament\Infolists\Infolist;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Forms\Concerns\InteractsWithForms;
+use App\Filament\Resources\SubscriptionResource;
+use Filament\Infolists\Concerns\InteractsWithInfolists;
+
+class Search extends Component implements HasForms, HasInfolists
 {
     use InteractsWithForms;
+    use InteractsWithInfolists;
 
     public $currentGym;
     public $search;
@@ -48,6 +54,36 @@ class Search extends Component implements HasForms
                     })
             ])
             ->statePath('data');
+    }
+
+    public function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->record($this->subscription)
+            ->schema([
+                Infolists\Components\Section::make($this->client->name)
+                    ->description('CI: ' . $this->client->card_id)
+                    ->headerActions([
+                        Infolists\Components\Actions\Action::make('show')
+                            ->label('Ver Detalle')
+                            ->url(fn (Subscription $record): string => SubscriptionResource::getUrl('view', ['record' => $record])),
+                    ])
+                    ->schema([
+                        Infolists\Components\TextEntry::make('status')
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'active' => 'success',
+                                'inactive' => 'danger',
+                                default => 'gray',
+                            }),
+                        Infolists\Components\TextEntry::make('membership.name'),
+                        Infolists\Components\TextEntry::make('start_date')
+                            ->dateTime('d-m-Y'),
+                        Infolists\Components\TextEntry::make('end_date')
+                            ->dateTime('d-m-Y'),
+                    ])
+                    ->columns(2),
+            ]);
     }
 
     public function render()
