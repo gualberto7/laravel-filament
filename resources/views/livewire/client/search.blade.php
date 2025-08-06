@@ -2,9 +2,11 @@
     {{ $this->form }}
 
     <div class="w-full mt-6 h-64">
-        <div class="w-full flex justify-center items-center">
+        <div class="w-full">
             @if ($this->subscription)
-                {{ $this->infolist }}
+                <div class="w-full">
+                    {{ $this->infolist }}
+                </div>
             @else
                 <div class="flex flex-col items-center h-full justify-center">
                     <h1 class="text-lg font-bold text-gray-500 dark:text-gray-400">
