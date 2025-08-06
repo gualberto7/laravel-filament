@@ -68,6 +68,12 @@ class Search extends Component implements HasForms, HasInfolists
                             ->label('Ver Detalle')
                             ->url(fn (Subscription $record): string => SubscriptionResource::getUrl('view', ['record' => $record])),
                     ])
+                    ->footerActions([
+                        Infolists\Components\Actions\Action::make('checkIn')
+                            ->action(function () {
+                                $this->client->addCheckIn();
+                            })
+                    ])
                     ->schema([
                         Infolists\Components\TextEntry::make('status')
                             ->badge()
