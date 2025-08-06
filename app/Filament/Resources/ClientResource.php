@@ -17,6 +17,7 @@ use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use App\Livewire\CheckIn\Index;
 use App\Filament\Traits\HasPagination;
+use Filament\GlobalSearch\Actions\Action;
 
 class ClientResource extends Resource
 {
@@ -29,6 +30,7 @@ class ClientResource extends Resource
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $recordTitleAttribute = 'name';
+    protected static int $globalSearchResultsLimit = 5;
 
     public static function form(Form $form): Form
     {
@@ -177,5 +179,10 @@ class ClientResource extends Resource
         return [
             'Carnet' => $record->card_id,
         ];
+    }
+
+    public static function getGlobalSearchResultUrl(Model $record): string
+    {
+        return ClientResource::getUrl('view', ['record' => $record]);
     }
 }

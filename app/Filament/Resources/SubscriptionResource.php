@@ -191,7 +191,7 @@ class SubscriptionResource extends Resource
                     ->action(fn (Subscription $record, array $data) => [
                         $record->clients->each(function (Client $client) use ($data, $record) {
                             if (in_array($client->id, $data['client_id'])) {
-                                $client->addCheckIn($record->gym_id, $data['locker_number']);
+                                $client->addCheckIn($data['locker_number']);
                             }
                         }),
                         Notification::make()
