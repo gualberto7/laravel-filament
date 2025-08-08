@@ -35,6 +35,8 @@ class Client extends Model
             'created_by' => auth()->user()->name,
             'updated_by' => auth()->user()->name,
         ]);
+
+        return $checkIn;
     }
 
     public function scopeActive($query)

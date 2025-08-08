@@ -15,6 +15,7 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Forms\Concerns\InteractsWithForms;
 use App\Filament\Resources\SubscriptionResource;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
+use Filament\Notifications\Notification;
 
 class Search extends Component implements HasForms, HasInfolists
 {
@@ -71,7 +72,20 @@ class Search extends Component implements HasForms, HasInfolists
                     ->footerActions([
                         Infolists\Components\Actions\Action::make('checkIn')
                             ->action(function () {
-                                $this->client->addCheckIn();
+                                $checkIn = $this->client->addCheckIn();
+                                
+                                if ($checkIn) {
+                                    Notification::make()
+                                        ->title('Check-in registrado correctamente')
+                                        ->body('El check-in para ' . $this->client->name . ' ha sido registrado exitosamente.')
+                                        ->success()
+                                        ->send();
+                                } else {
+                                    Notification::make()
+                                        ->title('Ocurrio un error')
+                                        ->error()
+                                        ->send();
+                                }
                             })
                     ])
                     ->schema([
