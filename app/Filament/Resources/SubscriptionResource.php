@@ -3,20 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SubscriptionResource\Pages;
-use App\Filament\Resources\SubscriptionResource\RelationManagers;
 use App\Models\Subscription;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Set;
 use Filament\Forms\Get;
 use Carbon\Carbon;
 use App\Models\Client;
-use App\Models\CheckIn;
 use Filament\Notifications\Notification;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
@@ -174,7 +170,7 @@ class SubscriptionResource extends Resource
                     ->label('Membresia'),
             ])
             ->actions([
-                Tables\Actions\Action::make('checkIn')
+                /* Tables\Actions\Action::make('checkIn')
                     ->label('Check-in')
                     ->fillForm(fn (Subscription $record) => [
                         'client_id' => $record->clients->pluck('id'),
@@ -199,7 +195,7 @@ class SubscriptionResource extends Resource
                             ->success()
                             ->send(),
                     ])
-                    ->modalWidth('md'),
+                    ->modalWidth('md'), */
 
                 Tables\Actions\ViewAction::make(),
             ])
