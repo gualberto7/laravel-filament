@@ -36,7 +36,7 @@ class Membership extends Model
                 $q->where('is_promo', true)
                   ->where('active', true)
                   ->where('promo_start_date', '<=', now())
-                  ->where('promo_end_date', '>=', now());
+                  ->whereDate('promo_end_date', '>=', now()->toDateString());
             });
         });
     }
@@ -54,7 +54,7 @@ class Membership extends Model
                   ->where(function ($q) {
                       $q->where('active', false)
                         ->orWhere('promo_start_date', '>', now())
-                        ->orWhere('promo_end_date', '<', now());
+                        ->orWhereDate('promo_end_date', '<', now()->toDateString());
                   });
             });
         });
@@ -70,7 +70,19 @@ class Membership extends Model
             return true;
         }
 
-        $now = now();
-        return $now->between($this->promo_start_date, $this->promo_end_date);
+        $today = now()->toDateString();
+        return $today >= $this->promo_start_date->format('Y-m-d') && 
+               $today <= $this->promo_end_date->format('Y-m-d');
+    }
+
+    public static function getActivePromosQuery($query)
+    {
+        return $query->where(function ($query) {
+            $query->where('is_promo', false)
+                  ->orWhere(function ($query) {
+                      $query->where('is_promo', true)
+                            ->whereDate('promo_end_date', '>=', now()->toDateString());
+                  });
+        });
     }
 }

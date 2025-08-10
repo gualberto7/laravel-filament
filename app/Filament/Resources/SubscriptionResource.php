@@ -39,7 +39,9 @@ class SubscriptionResource extends Resource
                     ])
                     ->schema([
                         Forms\Components\Select::make('membership_id')
-                            ->relationship('membership', 'name')
+                            ->relationship('membership', 'name', function ($query) {
+                                \App\Models\Membership::getActivePromosQuery($query);
+                            })
                             ->required()
                             ->live()
                             ->disabledOn(['edit'])
