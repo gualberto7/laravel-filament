@@ -81,6 +81,11 @@ class Search extends Component implements HasForms, HasInfolists
                                         ->body('El check-in para ' . $this->client->name . ' ha sido registrado exitosamente.')
                                         ->success()
                                         ->send();
+                                    
+                                    // Reset form and clear data
+                                    $this->form->fill(['client_id' => null]);
+                                    $this->client = null;
+                                    $this->subscription = null;
                                 } else {
                                     Notification::make()
                                         ->title('Ocurrio un error')
