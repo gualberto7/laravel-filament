@@ -2,13 +2,39 @@
 
 namespace App\Filament\Resources\SubscriptionResource\Pages;
 
-use App\Filament\Resources\SubscriptionResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\SubscriptionResource;
 
 class CreateSubscription extends CreateRecord
 {
     protected static string $resource = SubscriptionResource::class;
+
+    protected function getFormModel(): string|null
+    {
+        return null;
+    }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // Preselect client if client_id is provided in URL
+        if (request()->has('client_id')) {
+            $data['clients'] = [request()->get('client_id')];
+        }
+        
+        return $data;
+    }
+
+    public function mount(): void
+    {
+        parent::mount();
+        
+        // Preselect client if client_id is provided in URL
+        if (request()->has('client_id')) {
+            $this->form->fill([
+                'clients' => [request()->get('client_id')]
+            ]);
+        }
+    }
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {

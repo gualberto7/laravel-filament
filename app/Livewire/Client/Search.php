@@ -92,7 +92,11 @@ class Search extends Component implements HasForms, HasInfolists
                                         ->error()
                                         ->send();
                                 }
-                            })
+                            }),
+                        Infolists\Components\Actions\Action::make('createSubscription')
+                            ->label('Nueva Suscripción')
+                            ->visible(fn (): bool => $this->subscription?->status === 'expired')
+                            ->url(fn (): string => SubscriptionResource::getUrl('create', ['client_id' => $this->client->id]))
                     ])
                     ->schema([
                         Infolists\Components\TextEntry::make('status')
