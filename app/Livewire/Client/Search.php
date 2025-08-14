@@ -71,6 +71,7 @@ class Search extends Component implements HasForms, HasInfolists
                     ])
                     ->footerActions([
                         Infolists\Components\Actions\Action::make('checkIn')
+                            ->disabled(fn (): bool => $this->subscription?->status === 'expired')
                             ->action(function () {
                                 $checkIn = $this->client->addCheckIn();
                                 
@@ -93,8 +94,8 @@ class Search extends Component implements HasForms, HasInfolists
                             ->badge()
                             ->color(fn (string $state): string => match ($state) {
                                 'active' => 'success',
-                                'inactive' => 'danger',
-                                default => 'gray',
+                                'expired' => 'danger',
+                                default => 'warning',
                             }),
                         Infolists\Components\TextEntry::make('membership.name'),
                         Infolists\Components\TextEntry::make('start_date')
