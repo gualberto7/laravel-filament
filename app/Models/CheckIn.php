@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\CheckInFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -10,7 +11,7 @@ use Carbon\Carbon;
 
 class CheckIn extends Model
 {
-    /** @use HasFactory<\Database\Factories\CheckInFactory> */
+    /** @use HasFactory<CheckInFactory> */
     use HasFactory, HasUuids, BelongsToGym;
 
     public function client()

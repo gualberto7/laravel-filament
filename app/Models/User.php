@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Exception;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -14,7 +16,7 @@ use App\Models\Traits\HasPreferences;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasUuids, HasRoles, HasPreferences;
 
     /**
@@ -71,7 +73,7 @@ class User extends Authenticatable
         }
 
         if (!$gym) {
-            throw new \Exception('User does not have an owned gym or gym');
+            throw new Exception('User does not have an owned gym or gym');
         }
 
         $this->setPreference('current_gym', $gym->id);

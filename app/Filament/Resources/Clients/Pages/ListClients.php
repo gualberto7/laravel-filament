@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\ClientResource\Pages;
+namespace App\Filament\Resources\Clients\Pages;
 
-use App\Filament\Resources\ClientResource;
+use Filament\Actions\CreateAction;
+use Filament\Schemas\Components\Tabs\Tab;
+use App\Filament\Resources\Clients\ClientResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Resources\Components\Tab;
 use Illuminate\Database\Eloquent\Builder;
 
 class ListClients extends ListRecords
@@ -15,7 +16,7 @@ class ListClients extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 

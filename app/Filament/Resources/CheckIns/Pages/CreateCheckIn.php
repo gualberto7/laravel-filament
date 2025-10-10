@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\CheckInResource\Pages;
+namespace App\Filament\Resources\CheckIns\Pages;
 
-use App\Filament\Resources\CheckInResource;
+use App\Filament\Resources\CheckIns\CheckInResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 

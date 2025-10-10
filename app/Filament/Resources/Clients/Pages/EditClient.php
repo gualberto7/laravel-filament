@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\ClientResource\Pages;
+namespace App\Filament\Resources\Clients\Pages;
 
-use App\Filament\Resources\ClientResource;
+use Filament\Actions\DeleteAction;
+use App\Filament\Resources\Clients\ClientResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -13,7 +14,7 @@ class EditClient extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 }

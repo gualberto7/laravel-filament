@@ -1,12 +1,20 @@
 <?php
 
-namespace App\Filament\SuperAdmin\Resources;
+namespace App\Filament\SuperAdmin\Resources\Gyms;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\SuperAdmin\Resources\Gyms\Pages\ListGyms;
+use App\Filament\SuperAdmin\Resources\Gyms\Pages\CreateGym;
+use App\Filament\SuperAdmin\Resources\Gyms\Pages\EditGym;
 use App\Filament\SuperAdmin\Resources\GymResource\Pages;
 use App\Filament\SuperAdmin\Resources\GymResource\RelationManagers;
 use App\Models\Gym;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -17,19 +25,19 @@ class GymResource extends Resource
 {
     protected static ?string $model = Gym::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
+        return $schema
+            ->components([
+                TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('address')
+                TextInput::make('address')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
+                TextInput::make('phone')
             ]);
     }
 
@@ -37,20 +45,20 @@ class GymResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('address'),
-                Tables\Columns\TextColumn::make('phone'),
-                Tables\Columns\TextColumn::make('owner.name'),
+                TextColumn::make('name'),
+                TextColumn::make('address'),
+                TextColumn::make('phone'),
+                TextColumn::make('owner.name'),
             ])
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -65,9 +73,9 @@ class GymResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListGyms::route('/'),
-            'create' => Pages\CreateGym::route('/create'),
-            'edit' => Pages\EditGym::route('/{record}/edit'),
+            'index' => ListGyms::route('/'),
+            'create' => CreateGym::route('/create'),
+            'edit' => EditGym::route('/{record}/edit'),
         ];
     }
 }

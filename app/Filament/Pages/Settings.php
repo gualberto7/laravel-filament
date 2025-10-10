@@ -2,12 +2,14 @@
 
 namespace App\Filament\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Livewire;
 use Filament\Pages\Page;
 use Filament\Facades\Filament;
 use App\Models\Gym;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
 use Filament\Infolists;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -19,11 +21,11 @@ class Settings extends Page implements HasInfolists, HasForms
     use InteractsWithInfolists;
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-cog-6-tooth';
     protected static ?string $navigationLabel = 'Gimnasio';
-    protected static ?string $navigationGroup = 'Configuración';
+    protected static string | \UnitEnum | null $navigationGroup = 'Configuración';
 
-    protected static string $view = 'filament.pages.settings';
+    protected string $view = 'filament.pages.settings';
 
     public $currentGymId;
     public $currentGym;
@@ -34,16 +36,16 @@ class Settings extends Page implements HasInfolists, HasForms
         $this->currentGym = Gym::find($this->currentGymId);
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->record($this->currentGym)
-            ->schema([
-                Infolists\Components\Section::make('Gym Settings')
+            ->components([
+                Section::make('Gym Settings')
                     ->description('Configuración de la sucursal')
                     ->aside()
                     ->schema([
-                        Infolists\Components\Livewire::make(SettingsLivewire::class, [
+                        Livewire::make(SettingsLivewire::class, [
                             'currentGym' => $this->currentGym,
                         ])
                     ])

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\MembershipResource\Pages;
+namespace App\Filament\Resources\Memberships\Pages;
 
-use App\Filament\Resources\MembershipResource;
+use App\Filament\Resources\Memberships\MembershipResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 

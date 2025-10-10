@@ -1,12 +1,21 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\CheckIns;
 
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\Resources\CheckIns\Pages\ListCheckIns;
+use App\Filament\Resources\CheckIns\Pages\CreateCheckIn;
+use App\Filament\Resources\CheckIns\Pages\EditCheckIn;
 use App\Filament\Resources\CheckInResource\Pages;
 use App\Filament\Resources\CheckInResource\RelationManagers;
 use App\Models\CheckIn;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -24,12 +33,12 @@ class CheckInResource extends Resource
 
     protected static ?string $navigationLabel = 'Check-ins';
     protected static ?int $navigationSort = 2;
-    protected static ?string $navigationIcon = 'heroicon-o-check-circle';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-check-circle';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 //
             ]);
     }
@@ -42,25 +51,25 @@ class CheckInResource extends Resource
                     ->orderByDesc('created_at');
             })
             ->columns([
-                Tables\Columns\TextColumn::make('client.name')
+                TextColumn::make('client.name')
                     ->label('Cliente')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label('Fecha y hora')
                     ->dateTime('D d - H:i'),
-                Tables\Columns\TextColumn::make('locker_number')
+                TextColumn::make('locker_number')
                     ->label('Caja')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_by')
+                TextColumn::make('created_by')
                     ->label('Creado por'),
             ])
             ->filters([
-                Tables\Filters\Filter::make('created_at')
-                ->form([
-                    Forms\Components\DatePicker::make('created_from')
+                Filter::make('created_at')
+                ->schema([
+                    DatePicker::make('created_from')
                         ->label('Desde')
                         ->default(now()),
-                    Forms\Components\DatePicker::make('created_until')
+                    DatePicker::make('created_until')
                         ->label('Hasta')
                         ->default(now()),
                 ])
@@ -76,12 +85,12 @@ class CheckInResource extends Resource
                         );
                 })
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -96,9 +105,9 @@ class CheckInResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCheckIns::route('/'),
-            'create' => Pages\CreateCheckIn::route('/create'),
-            'edit' => Pages\EditCheckIn::route('/{record}/edit'),
+            'index' => ListCheckIns::route('/'),
+            'create' => CreateCheckIn::route('/create'),
+            'edit' => EditCheckIn::route('/{record}/edit'),
         ];
     }
 }

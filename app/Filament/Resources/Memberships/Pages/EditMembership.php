@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\MembershipResource\Pages;
+namespace App\Filament\Resources\Memberships\Pages;
 
-use App\Filament\Resources\MembershipResource;
+use Filament\Actions\DeleteAction;
+use App\Filament\Resources\Memberships\MembershipResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -13,7 +14,7 @@ class EditMembership extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 

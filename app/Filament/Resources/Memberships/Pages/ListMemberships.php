@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\MembershipResource\Pages;
+namespace App\Filament\Resources\Memberships\Pages;
 
-use App\Filament\Resources\MembershipResource;
+use Filament\Actions\CreateAction;
+use Filament\Schemas\Components\Tabs\Tab;
+use App\Filament\Resources\Memberships\MembershipResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Resources\Components\Tab;
 use Illuminate\Database\Eloquent\Builder;
 
 class ListMemberships extends ListRecords
@@ -15,7 +16,7 @@ class ListMemberships extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 

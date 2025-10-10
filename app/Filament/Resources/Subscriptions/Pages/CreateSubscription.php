@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\SubscriptionResource\Pages;
+namespace App\Filament\Resources\Subscriptions\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
-use App\Filament\Resources\SubscriptionResource;
+use App\Filament\Resources\Subscriptions\SubscriptionResource;
 
 class CreateSubscription extends CreateRecord
 {
@@ -20,14 +20,14 @@ class CreateSubscription extends CreateRecord
         if (request()->has('client_id')) {
             $data['clients'] = [request()->get('client_id')];
         }
-        
+
         return $data;
     }
 
     public function mount(): void
     {
         parent::mount();
-        
+
         // Preselect client if client_id is provided in URL
         if (request()->has('client_id')) {
             $this->form->fill([

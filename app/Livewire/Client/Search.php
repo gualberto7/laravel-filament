@@ -2,23 +2,29 @@
 
 namespace App\Livewire\Client;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Schemas\Components\Section;
+use Filament\Actions\Action;
+use Filament\Infolists\Components\TextEntry;
 use App\Models\Client;
 use App\Models\Subscription;
 
 use Filament\Forms;
 use Livewire\Component;
 use Filament\Infolists;
-use Filament\Forms\Form;
-use Filament\Infolists\Infolist;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Forms\Concerns\InteractsWithForms;
-use App\Filament\Resources\SubscriptionResource;
+use App\Filament\Resources\Subscriptions\SubscriptionResource;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Notifications\Notification;
 
-class Search extends Component implements HasForms, HasInfolists
+class Search extends Component implements HasForms, HasInfolists, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithInfolists;
 
@@ -34,11 +40,11 @@ class Search extends Component implements HasForms, HasInfolists
         $this->form->fill();
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('client_id')
+        return $schema
+            ->components([
+                Select::make('client_id')
                     ->label('Cliente')
                     ->options(Client::all()->pluck('name', 'id'))
                     ->searchable()
@@ -57,20 +63,20 @@ class Search extends Component implements HasForms, HasInfolists
             ->statePath('data');
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->record($this->subscription)
-            ->schema([
-                Infolists\Components\Section::make($this->client->name)
+            ->components([
+                Section::make($this->client->name)
                     ->description('CI: ' . $this->client->card_id)
                     ->headerActions([
-                        Infolists\Components\Actions\Action::make('show')
+                        Action::make('show')
                             ->label('Ver Detalle')
                             ->url(fn (Subscription $record): string => SubscriptionResource::getUrl('view', ['record' => $record])),
                     ])
                     ->footerActions([
-                        Infolists\Components\Actions\Action::make('checkIn')
+                        Action::make('checkIn')
                             ->disabled(fn (): bool => $this->subscription?->status === 'expired')
                             ->action(function () {
                                 $checkIn = $this->client->addCheckIn();
@@ -93,23 +99,23 @@ class Search extends Component implements HasForms, HasInfolists
                                         ->send();
                                 }
                             }),
-                        Infolists\Components\Actions\Action::make('createSubscription')
+                        Action::make('createSubscription')
                             ->label('Nueva Suscripción')
                             ->visible(fn (): bool => $this->subscription?->status === 'expired')
                             ->url(fn (): string => SubscriptionResource::getUrl('create', ['client_id' => $this->client->id]))
                     ])
                     ->schema([
-                        Infolists\Components\TextEntry::make('status')
+                        TextEntry::make('status')
                             ->badge()
                             ->color(fn (string $state): string => match ($state) {
                                 'active' => 'success',
                                 'expired' => 'danger',
                                 default => 'warning',
                             }),
-                        Infolists\Components\TextEntry::make('membership.name'),
-                        Infolists\Components\TextEntry::make('start_date')
+                        TextEntry::make('membership.name'),
+                        TextEntry::make('start_date')
                             ->dateTime('d-m-Y'),
-                        Infolists\Components\TextEntry::make('end_date')
+                        TextEntry::make('end_date')
                             ->dateTime('d-m-Y'),
                     ])
                     ->columns(2),

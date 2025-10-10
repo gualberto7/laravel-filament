@@ -1,12 +1,26 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\Clients;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\ViewAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Schemas\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Schemas\Components\Livewire;
+use App\Filament\Resources\Clients\Pages\ListClients;
+use App\Filament\Resources\Clients\Pages\CreateClient;
+use App\Filament\Resources\Clients\Pages\EditClient;
+use App\Filament\Resources\Clients\Pages\ViewClient;
 use App\Filament\Resources\ClientResource\Pages;
 use App\Filament\Resources\ClientResource\RelationManagers;
 use App\Models\Client;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -14,7 +28,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Infolists;
-use Filament\Infolists\Infolist;
 use App\Livewire\CheckIn\Index;
 use App\Filament\Traits\HasPagination;
 use Filament\GlobalSearch\Actions\Action;
@@ -26,27 +39,27 @@ class ClientResource extends Resource
     protected static ?string $model = Client::class;
 
     protected static ?string $navigationLabel = 'Clientes';
-    protected static ?string $navigationGroup = 'Gestion';
+    protected static string | \UnitEnum | null $navigationGroup = 'Gestion';
     protected static ?int $navigationSort = 1;
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $recordTitleAttribute = 'name';
     protected static int $globalSearchResultsLimit = 5;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
+        return $schema
+            ->components([
+                TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('card_id')
+                TextInput::make('card_id')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('email')
+                TextInput::make('email')
                     ->email()
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
+                TextInput::make('phone')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -56,11 +69,11 @@ class ClientResource extends Resource
     {
         return static::applyPagination($table)
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('card_id'),
-                Tables\Columns\TextColumn::make('subscriptions.status')
+                TextColumn::make('card_id'),
+                TextColumn::make('subscriptions.status')
                     ->label('Suscripción')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -68,18 +81,18 @@ class ClientResource extends Resource
                         'inactive' => 'danger',
                         default => 'warning',
                     }),
-                Tables\Columns\TextColumn::make('phone'),
+                TextColumn::make('phone'),
             ])
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                ViewAction::make(),
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -91,44 +104,44 @@ class ClientResource extends Resource
         ];
     }
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
-                Infolists\Components\Section::make('Cliente')
+        return $schema
+            ->components([
+                Section::make('Cliente')
                     ->description('Datos del cliente')
                     ->headerActions([
-                        Infolists\Components\Actions\Action::make('edit')
+                        \Filament\Actions\Action::make('edit')
                             ->label('Editar Cliente')
                             ->url(fn (Client $record): string => ClientResource::getUrl('edit', ['record' => $record])),
                     ])
                     ->schema([
-                        Infolists\Components\TextEntry::make('name'),
-                        Infolists\Components\TextEntry::make('card_id'),
-                        Infolists\Components\TextEntry::make('email'),
-                        Infolists\Components\TextEntry::make('phone'),
-                        Infolists\Components\TextEntry::make('created_at')
+                        TextEntry::make('name'),
+                        TextEntry::make('card_id'),
+                        TextEntry::make('email'),
+                        TextEntry::make('phone'),
+                        TextEntry::make('created_at')
                             ->dateTime('d-m-Y H:i'),
-                        Infolists\Components\TextEntry::make('updated_at')
+                        TextEntry::make('updated_at')
                             ->dateTime('d-m-Y H:i'),
-                        Infolists\Components\TextEntry::make('created_by'),
-                        Infolists\Components\TextEntry::make('updated_by'),
+                        TextEntry::make('created_by'),
+                        TextEntry::make('updated_by'),
                     ])
                     ->columns(3),
 
-                Infolists\Components\Section::make('Suscripciones')
+                Section::make('Suscripciones')
                     ->description('Subscripciones actuales del cliente, para ver el historial de suscripciones, haga click aquí')
                     ->headerActions([
-                        Infolists\Components\Actions\Action::make('create')
+                        \Filament\Actions\Action::make('create')
                             ->label('Crear Suscripción')
                             ->url(fn (Client $record): string => ClientResource::getUrl('create', ['record' => $record])),
                     ])
                     ->schema([
-                        Infolists\Components\RepeatableEntry::make('subscriptions')
+                        RepeatableEntry::make('subscriptions')
                             ->label('')
                             ->columns(2)
                             ->schema([
-                                Infolists\Components\TextEntry::make('status')
+                                TextEntry::make('status')
                                     ->badge()
                                     ->color(fn (string $state): string => match ($state) {
                                         'active' => 'success',
@@ -136,25 +149,25 @@ class ClientResource extends Resource
                                         'expires_today' => 'danger',
                                         'expired' => 'gray',
                                     }),
-                                Infolists\Components\TextEntry::make('start_date')
+                                TextEntry::make('start_date')
                                     ->dateTime('d-m-Y'),
-                                Infolists\Components\TextEntry::make('end_date')
+                                TextEntry::make('end_date')
                                     ->dateTime('d-m-Y'),
-                                Infolists\Components\TextEntry::make('price')
+                                TextEntry::make('price')
                                     ->prefix('Bs. '),
                             ])
                             ->grid(2),
                     ]),
 
-                Infolists\Components\Section::make('Check-in')
+                Section::make('Check-in')
                     ->description('Check-in del cliente')
                     ->headerActions([
-                        Infolists\Components\Actions\Action::make('create')
+                        \Filament\Actions\Action::make('create')
                             ->label('Ver todos los check-in')
                             ->url(fn (Client $record): string => ClientResource::getUrl('view', ['record' => $record])),
                     ])
                     ->schema([
-                        Infolists\Components\Livewire::make(Index::class)
+                        Livewire::make(Index::class)
                     ]),
             ]);
     }
@@ -162,10 +175,10 @@ class ClientResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListClients::route('/'),
-            'create' => Pages\CreateClient::route('/create'),
-            'edit' => Pages\EditClient::route('/{record}/edit'),
-            'view' => Pages\ViewClient::route('/{record}'),
+            'index' => ListClients::route('/'),
+            'create' => CreateClient::route('/create'),
+            'edit' => EditClient::route('/{record}/edit'),
+            'view' => ViewClient::route('/{record}'),
         ];
     }
 

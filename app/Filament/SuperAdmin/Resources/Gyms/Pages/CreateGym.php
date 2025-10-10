@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\SuperAdmin\Resources\GymResource\Pages;
+namespace App\Filament\SuperAdmin\Resources\Gyms\Pages;
 
-use App\Filament\SuperAdmin\Resources\GymResource;
+use App\Filament\SuperAdmin\Resources\Gyms\GymResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 

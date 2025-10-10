@@ -2,6 +2,8 @@
 
 namespace App\Livewire\CheckIn;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
 use App\Models\CheckIn;
 use Livewire\Component;
 use Filament\Tables\Table;
@@ -12,8 +14,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Forms\Concerns\InteractsWithForms;
 
-class Index extends Component implements HasTable, HasForms
+class Index extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 

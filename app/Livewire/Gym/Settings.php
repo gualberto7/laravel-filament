@@ -2,17 +2,21 @@
 
 namespace App\Livewire\Gym;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms;
 use Livewire\Component;
-use Filament\Forms\Form;
 use App\Enums\GymPreferences;
 use Livewire\Attributes\Computed;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Forms\Concerns\InteractsWithForms;
 
-class Settings extends Component implements HasForms
+class Settings extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public $currentGym;
@@ -36,11 +40,11 @@ class Settings extends Component implements HasForms
         $this->initialState = $this->form->getState();
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\CheckboxList::make('preferences')
+        return $schema
+            ->components([
+                CheckboxList::make('preferences')
                     ->options(GymPreferences::class)
                     ->label('')
                     ->live(),

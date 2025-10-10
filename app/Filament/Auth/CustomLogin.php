@@ -2,7 +2,7 @@
 
 namespace App\Filament\Auth;
 
-use Filament\Pages\Auth\Login;
+use Filament\Auth\Pages\Login;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Validation\ValidationException;
 
@@ -13,7 +13,7 @@ class CustomLogin extends Login
         return [
             'form' => $this->form(
                 $this->makeForm()
-                    ->schema([
+                    ->components([
                         TextInput::make('username')
                             ->label('Username')
                             ->required(),

@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Filament\SuperAdmin\Resources\GymResource\Pages;
+namespace App\Filament\SuperAdmin\Resources\Gyms\Pages;
 
-use App\Filament\SuperAdmin\Resources\GymResource;
+use Filament\Actions\CreateAction;
+use App\Filament\SuperAdmin\Resources\Gyms\GymResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -13,7 +14,7 @@ class ListGyms extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 }

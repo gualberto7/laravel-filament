@@ -1,17 +1,31 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\Memberships;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Checkbox;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\ViewAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Schemas\Components\Section;
+use Filament\Actions\Action;
+use Filament\Infolists\Components\TextEntry;
+use App\Filament\Resources\Memberships\Pages\ListMemberships;
+use App\Filament\Resources\Memberships\Pages\CreateMembership;
+use App\Filament\Resources\Memberships\Pages\EditMembership;
+use App\Filament\Resources\Memberships\Pages\ViewMembership;
 use App\Filament\Resources\MembershipResource\Pages;
 use App\Models\Membership;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms\Get;
 use Filament\Infolists;
-use Filament\Infolists\Infolist;
 use Illuminate\Database\Eloquent\Model;
 
 class MembershipResource extends Resource
@@ -19,28 +33,28 @@ class MembershipResource extends Resource
     protected static ?string $model = Membership::class;
 
     protected static ?string $navigationLabel = 'Membresías';
-    protected static ?string $navigationGroup = 'Gestion';
+    protected static string | \UnitEnum | null $navigationGroup = 'Gestion';
     protected static ?int $navigationSort = 3;
-    protected static ?string $navigationIcon = 'heroicon-o-ticket';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-ticket';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
+        return $schema
+            ->components([
+                TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('price')
+                TextInput::make('price')
                     ->prefix('Bs.')
                     ->numeric()
                     ->required(),
-                Forms\Components\TextInput::make('duration')
+                TextInput::make('duration')
                     ->prefix('Días')
                     ->required()
                     ->numeric(),
-                Forms\Components\Checkbox::make('active')
+                Checkbox::make('active')
                     ->label('Activo?'),
-                Forms\Components\TextInput::make('max_installments')
+                TextInput::make('max_installments')
                     ->label('Paga en cuotas')
                     ->hint(function ($state, Get $get): string {
                         $price = $get('price');
@@ -54,24 +68,24 @@ class MembershipResource extends Resource
                     ->required()
                     ->numeric()
                     ->default(1),
-                Forms\Components\Checkbox::make('has_max_checkins')
+                Checkbox::make('has_max_checkins')
                     ->label('Maximo de checkins?')
                     ->live(),
-                Forms\Components\TextInput::make('max_checkins')
+                TextInput::make('max_checkins')
                     ->label('Máx. checkins')
                     ->numeric()
                     ->required()
                     ->visible(fn (Get $get): bool => $get('has_max_checkins')),
-                Forms\Components\Checkbox::make('is_promo')
+                Checkbox::make('is_promo')
                     ->label('Promo?')
                     ->live(),
-                Forms\Components\DatePicker::make('promo_start_date')
+                DatePicker::make('promo_start_date')
                     ->label('Fecha de inicio de promo')
                     ->visible(fn (Get $get): bool => $get('is_promo')),
-                Forms\Components\DatePicker::make('promo_end_date')
+                DatePicker::make('promo_end_date')
                     ->label('Fecha de fin de promo')
                     ->visible(fn (Get $get): bool => $get('is_promo')),
-                Forms\Components\TextInput::make('max_clients')
+                TextInput::make('max_clients')
                     ->label('Máx. clientes')
                     ->default(1)
                     ->numeric()
@@ -84,14 +98,14 @@ class MembershipResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Nombre'),
-                Tables\Columns\TextColumn::make('price')
+                TextColumn::make('price')
                     ->label('Precio Bs.')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('duration')
+                TextColumn::make('duration')
                     ->label('Duración días'),
-                Tables\Columns\TextColumn::make('is_promo')
+                TextColumn::make('is_promo')
                     ->label('Tipo')
                     ->badge()
                     ->color(fn (string $state): string => $state ? 'success' : 'gray')
@@ -101,67 +115,67 @@ class MembershipResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                ViewAction::make(),
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
-                Infolists\Components\Section::make('Membresía')
+        return $schema
+            ->components([
+                Section::make('Membresía')
                     ->description('Datos de la Membresía / Promoción')
                     ->headerActions([
-                        Infolists\Components\Actions\Action::make('edit')
+                        Action::make('edit')
                             ->label('Editar Membresía')
                             ->url(fn (Membership $record): string => MembershipResource::getUrl('edit', ['record' => $record])),
                     ])
                     ->schema([
-                        Infolists\Components\TextEntry::make('name'),
-                        Infolists\Components\TextEntry::make('is_promo')
+                        TextEntry::make('name'),
+                        TextEntry::make('is_promo')
                             ->label('Tipo')
                             ->badge()
                             ->color(fn (string $state): string => $state ? 'success' : 'gray')
                             ->formatStateUsing(fn (string $state): string => $state ? 'Promoción' : 'Normal'),
-                        Infolists\Components\TextEntry::make('is_active')
+                        TextEntry::make('is_active')
                             ->label('Estado')
                             ->badge()
                             ->color(fn (string $state): string => $state ? 'success' : 'danger')
                             ->formatStateUsing(fn (string $state): string => $state ? 'Activo' : 'Inactivo'),
-                        Infolists\Components\TextEntry::make('price')
+                        TextEntry::make('price')
                             ->label('Precio Bs.')
                             ->prefix('Bs.'),
-                        Infolists\Components\TextEntry::make('promo_start_date')
+                        TextEntry::make('promo_start_date')
                             ->label('Fecha de inicio de promo')
                             ->dateTime('d-m-Y')
                             ->visible(function (Model $record): bool {
                                 return $record->is_promo && $record->promo_start_date;
                             }),
-                        Infolists\Components\TextEntry::make('promo_end_date')
+                        TextEntry::make('promo_end_date')
                             ->label('Fecha de fin de promo')
                             ->dateTime('d-m-Y')
                             ->visible(function (Model $record): bool {
                                 return $record->is_promo && $record->promo_end_date;
                             }),
-                        Infolists\Components\TextEntry::make('duration')
+                        TextEntry::make('duration')
                             ->label('Duración días'),
-                        Infolists\Components\TextEntry::make('max_installments')
+                        TextEntry::make('max_installments')
                             ->label('Paga en cuotas'),
-                        Infolists\Components\TextEntry::make('max_checkins')
+                        TextEntry::make('max_checkins')
                             ->label('Máximo de entradas'),
-                        Infolists\Components\TextEntry::make('max_clients')
+                        TextEntry::make('max_clients')
                             ->label('Máximo de clientes'),
-                        Infolists\Components\TextEntry::make('created_at')
+                        TextEntry::make('created_at')
                             ->label('Fecha de creación')
                             ->dateTime('d-m-Y H:i'),
-                        Infolists\Components\TextEntry::make('updated_at')
+                        TextEntry::make('updated_at')
                             ->label('Fecha de actualización')
                             ->dateTime('d-m-Y H:i'),
                     ])
@@ -179,10 +193,10 @@ class MembershipResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListMemberships::route('/'),
-            'create' => Pages\CreateMembership::route('/create'),
-            'edit' => Pages\EditMembership::route('/{record}/edit'),
-            'view' => Pages\ViewMembership::route('/{record}'),
+            'index' => ListMemberships::route('/'),
+            'create' => CreateMembership::route('/create'),
+            'edit' => EditMembership::route('/{record}/edit'),
+            'view' => ViewMembership::route('/{record}'),
         ];
     }
 }
