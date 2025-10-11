@@ -9,7 +9,7 @@
                 </div>
             @else
                 <div class="flex flex-col items-center h-full justify-center">
-                    <h1 class="text-lg font-bold text-gray-500 dark:text-gray-400">
+                    <h1 class="text-lg font-bold text-red-500 dark:text-red-400">
                         {{ $this->client ? 'Este cliente no tiene una suscripción' : 'Seleccione un cliente' }}
                     </h1>
                 </div>
