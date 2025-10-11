@@ -2,27 +2,23 @@
 
 namespace App\Filament\Auth;
 
+use Filament\Schemas\Schema;
 use Filament\Auth\Pages\Login;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Validation\ValidationException;
 
 class CustomLogin extends Login
 {
-    protected function getForms(): array
+    public function form(Schema $schema): Schema
     {
-        return [
-            'form' => $this->form(
-                $this->makeForm()
-                    ->components([
-                        TextInput::make('username')
-                            ->label('Username')
-                            ->required(),
-                        $this->getPasswordFormComponent(),
-                        $this->getRememberFormComponent(),
-                    ])
-                    ->statePath('data'),
-            ),
-        ];
+        return $schema
+            ->components([
+                TextInput::make('username')
+                    ->label('Usuario')
+                    ->required(),
+                $this->getPasswordFormComponent(),
+                $this->getRememberFormComponent()
+            ]);
     }
 
     protected function getCredentialsFromFormData(array $data): array
