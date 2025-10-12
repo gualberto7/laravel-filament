@@ -1,0 +1,7 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "ordered_imports": false,
+        "global_namespace_import": false
+    }
+}

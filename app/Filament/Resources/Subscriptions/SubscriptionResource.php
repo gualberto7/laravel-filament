@@ -2,39 +2,37 @@
 
 namespace App\Filament\Resources\Subscriptions;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\Select;
-use App\Models\Membership;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Actions\ViewAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\Action;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\RepeatableEntry;
-use App\Filament\Resources\Subscriptions\Pages\ListSubscriptions;
-use App\Filament\Resources\Subscriptions\Pages\CreateSubscription;
-use App\Filament\Resources\Subscriptions\Pages\EditSubscription;
-use App\Filament\Resources\Subscriptions\Pages\ViewSubscription;
-use App\Filament\Resources\SubscriptionResource\Pages;
-use App\Models\Subscription;
-use Filament\Forms;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
 use Carbon\Carbon;
 use App\Models\Client;
+use App\Models\Membership;
+use App\Models\Subscription;
+
+use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use Filament\Actions\Action;
+use Filament\Resources\Resource;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Select;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\Repeater;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Filament\Infolists;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Forms\Components\DatePicker;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Infolists\Components\RepeatableEntry;
+
 use App\Filament\Traits\HasPagination;
+use App\Filament\Resources\Subscriptions\Pages\EditSubscription;
+use App\Filament\Resources\Subscriptions\Pages\ViewSubscription;
+use App\Filament\Resources\Subscriptions\Pages\ListSubscriptions;
+use App\Filament\Resources\Subscriptions\Pages\CreateSubscription;
 
 class SubscriptionResource extends Resource
 {
@@ -43,8 +41,10 @@ class SubscriptionResource extends Resource
     protected static ?string $model = Subscription::class;
 
     protected static ?string $navigationLabel = 'Suscripciones';
+
     protected static ?int $navigationSort = 1;
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-credit-card';
+
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-credit-card';
 
     public static function form(Schema $schema): Schema
     {
@@ -70,7 +70,7 @@ class SubscriptionResource extends Resource
                                     if ($membership) {
                                         $set('end_date', now()->addDays($membership->duration)->format('Y-m-d'));
                                         $set('price', $membership->price);
-                                        
+
                                         $firstInstallmentKey = array_key_first($installments);
                                         if ($firstInstallmentKey) {
                                             $installments[$firstInstallmentKey]['amount'] = $membership->price / $membership->max_installments;
@@ -96,9 +96,10 @@ class SubscriptionResource extends Resource
                             })
                             ->required(),
                         DatePicker::make('end_date')
-                            ->readOnly()
-                        ]),
-                
+                            ->readOnly(),
+                    ])
+                    ->columnSpanFull(),
+
                 Section::make('Datos del Cliente')
                     ->schema([
                         Select::make('clients')
@@ -117,16 +118,18 @@ class SubscriptionResource extends Resource
                                 $client = Client::create($data + [
                                     'gym_id' => auth()->user()->getCurrentGymId(),
                                 ]);
+
                                 return $client->id;
                             })
-                            ->getOptionLabelFromRecordUsing(fn (Client $record) => $record->name . ' - ' . $record->card_id)
+                            ->getOptionLabelFromRecordUsing(fn (Client $record) => $record->name.' - '.$record->card_id)
                             ->searchable(['name', 'card_id'])
                             ->multiple()
                             ->required()
                             ->disabledOn(['edit'])
                             ->minItems(1),
-                    ]),
-                
+                    ])
+                    ->columnSpanFull(),
+
                 Section::make('Datos de Pago')
                     ->schema([
                         Repeater::make('installments')
@@ -137,6 +140,7 @@ class SubscriptionResource extends Resource
                             ->minItems(1)
                             ->maxItems(function (Get $get): int {
                                 $membership = Membership::find($get('membership_id'));
+
                                 return $membership->max_installments ?? 1;
                             })
                             ->relationship('payments')
@@ -160,6 +164,7 @@ class SubscriptionResource extends Resource
                             ->cloneable()
                             ->addActionLabel('Agregar Pago'),
                     ])
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -167,7 +172,7 @@ class SubscriptionResource extends Resource
     {
         return static::applyPagination($table)
             ->groups([
-                'membership.name'
+                'membership.name',
             ])
             ->columns([
                 TextColumn::make('clients.name')
@@ -176,13 +181,13 @@ class SubscriptionResource extends Resource
                 TextColumn::make('end_date')
                     ->dateTime('d-m-Y'),
                 TextColumn::make('status')
-                ->badge()
-                ->color(fn (string $state): string => match ($state) {
-                    'active' => 'success',
-                    'expires_soon' => 'warning',
-                    'expires_today' => 'danger',
-                    'expired' => 'gray',
-                })
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'active' => 'success',
+                        'expires_soon' => 'warning',
+                        'expires_today' => 'danger',
+                        'expired' => 'gray',
+                    }),
             ])
             ->filters([
                 SelectFilter::make('membership.name')
@@ -260,7 +265,8 @@ class SubscriptionResource extends Resource
                         TextEntry::make('created_by'),
                         TextEntry::make('updated_by'),
                     ])
-                    ->columns(3),
+                    ->columns(3)
+                    ->columnSpanFull(),
 
                 Section::make('Pagos')
                     ->headerActions([
@@ -284,7 +290,7 @@ class SubscriptionResource extends Resource
                                     ->success()
                                     ->send();
                             })
-                            ->modalWidth('md')
+                            ->modalWidth('md'),
                     ])
                     ->schema([
                         RepeatableEntry::make('payments')
@@ -297,7 +303,8 @@ class SubscriptionResource extends Resource
                                     ->dateTime('d-m-Y H:i'),
                                 TextEntry::make('created_by'),
                             ]),
-                    ]),
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -326,8 +333,9 @@ class SubscriptionResource extends Resource
             return $installment['amount'];
         }, $installments)) ?? 0;
         if ($membership && $totalAmount) {
-            return "Pagado: " . $totalAmount . " de " . $membership->price;
+            return 'Pagado: '.$totalAmount.' de '.$membership->price;
         }
+
         return '';
     }
 }
