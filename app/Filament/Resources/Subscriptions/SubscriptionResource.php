@@ -135,7 +135,7 @@ class SubscriptionResource extends Resource
                         Repeater::make('installments')
                             ->columns([
                                 'sm' => 1,
-                                'md' => 3,
+                                'md' => 2,
                             ])
                             ->minItems(1)
                             ->maxItems(function (Get $get): int {
@@ -155,10 +155,6 @@ class SubscriptionResource extends Resource
                                         'cash' => 'Efectivo',
                                         'card' => 'Tarjeta',
                                     ])
-                                    ->required(),
-                                DateTimePicker::make('created_at')
-                                    ->default(now())
-                                    ->readOnly()
                                     ->required(),
                             ])
                             ->cloneable()
