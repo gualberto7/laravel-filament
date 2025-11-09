@@ -79,13 +79,8 @@ class Search extends Component implements HasForms, HasActions, HasInfolists
                         Action::make('checkIn')
                             ->label('registro')
                             ->disabled(fn (): bool => $this->subscription?->status === 'expired')
-                            ->schema([
-                                TextInput::make('locker_key')
-                                    ->label('caja')
-                                    ->required()
-                            ])
                             ->action(function (array $data) {
-                                $checkIn = $this->client->addCheckIn($data['locker_key']);
+                                $checkIn = $this->client->addCheckIn();
                                 
                                 if ($checkIn) {
                                     Notification::make()
