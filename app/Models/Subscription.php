@@ -47,10 +47,6 @@ class Subscription extends Model
         $now = Carbon::now()->startOfDay();
         $endDate = $this->end_date->startOfDay();
         $daysDiff = (int) $now->diffInDays($endDate, false);
-
-        if ($this->start_date > $now) {
-            return 'por comenzar';
-        }
         
         if ($daysDiff < 0) {
             return 'expired';

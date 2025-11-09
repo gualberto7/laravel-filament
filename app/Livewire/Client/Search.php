@@ -4,6 +4,8 @@ namespace App\Livewire\Client;
 
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Infolists\Concerns\InteractsWithInfolists;
+use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Section;
@@ -11,18 +13,16 @@ use Filament\Actions\Action;
 use Filament\Infolists\Components\TextEntry;
 use App\Models\Client;
 use App\Models\Subscription;
+use Filament\Forms\Components\TextInput;
 
 use Filament\Forms;
 use Livewire\Component;
-use Filament\Infolists;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Forms\Concerns\InteractsWithForms;
 use App\Filament\Resources\Subscriptions\SubscriptionResource;
-use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Notifications\Notification;
 
-class Search extends Component implements HasForms, HasInfolists, HasActions
+class Search extends Component implements HasForms, HasActions, HasInfolists
 {
     use InteractsWithActions;
     use InteractsWithForms;
@@ -68,8 +68,8 @@ class Search extends Component implements HasForms, HasInfolists, HasActions
         return $schema
             ->record($this->subscription)
             ->components([
-                Section::make($this->client->name)
-                    ->description('CI: ' . $this->client->card_id)
+                Section::make($this->client?->name ?? 'Cliente')
+                    ->description('CI: ' . ($this->client->card_id ?? ''))
                     ->headerActions([
                         Action::make('show')
                             ->label('Ver Detalle')
@@ -77,9 +77,15 @@ class Search extends Component implements HasForms, HasInfolists, HasActions
                     ])
                     ->footerActions([
                         Action::make('checkIn')
+                            ->label('registro')
                             ->disabled(fn (): bool => $this->subscription?->status === 'expired')
-                            ->action(function () {
-                                $checkIn = $this->client->addCheckIn();
+                            ->schema([
+                                TextInput::make('locker_key')
+                                    ->label('caja')
+                                    ->required()
+                            ])
+                            ->action(function (array $data) {
+                                $checkIn = $this->client->addCheckIn($data['locker_key']);
                                 
                                 if ($checkIn) {
                                     Notification::make()
@@ -98,7 +104,8 @@ class Search extends Component implements HasForms, HasInfolists, HasActions
                                         ->error()
                                         ->send();
                                 }
-                            }),
+                            })
+                            ->modalWidth('md'),
                         Action::make('createSubscription')
                             ->label('Nueva Suscripción')
                             ->visible(fn (): bool => $this->subscription?->status === 'expired')
