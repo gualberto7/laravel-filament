@@ -57,7 +57,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->renderHook(
                 PanelsRenderHook::BODY_START,
-                fn (): string => Blade::render('@livewire(\'shared.modal\')')
+                fn (): string => Blade::render('@livewire(\'client.info-modal\')')
             )
             ->navigationGroups([
                 'Gestion',

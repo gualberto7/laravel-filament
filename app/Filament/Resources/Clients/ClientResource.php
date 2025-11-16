@@ -176,22 +176,15 @@ class ClientResource extends Resource
         ];
     }
 
-    public static function getGlobalSearchEloquentQuery(): Builder
-    {
-        return parent::getGlobalSearchEloquentQuery()->with(['subscriptions']);
-    }
-
     public static function getGloballySearchableAttributes(): array
     {
-        return ['name', 'card_id'];
+        return ['name', 'phone'];
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
     {
-        $subscription = $record->subscriptions->first();
         return [
-            'Carnet' => $record->card_id,
-            'Estado' => $subscription ? $subscription->status : 'No activo'
+            'Celular' => $record->phone,
         ];
     }
 
@@ -204,7 +197,7 @@ class ClientResource extends Resource
     {
         return [
             Action::make('checkin')
-                ->dispatch('addCheckin', [$record])
+                ->dispatch('addCheckin', [$record->id])
         ];
     }
 }
