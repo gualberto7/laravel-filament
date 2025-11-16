@@ -5,6 +5,7 @@ namespace App\Livewire\Client;
 use App\Models\Client;
 use Livewire\Component;
 use Livewire\Attributes\On;
+use Filament\Notifications\Notification;
 
 class InfoModal extends Component
 {
@@ -18,6 +19,22 @@ class InfoModal extends Component
         $this->subscription = $this->client->subscriptions->first() ?? null;
         $this->dispatch('open-modal', id: 'search-client');
     }
+
+    public function checkIn()
+    {
+        $this->client->addCheckIn();
+
+        // After registering the check-in, you might want to close the modal
+        $this->dispatch('close-modal', id: 'search-client');
+
+        // Optionally, you can also show a success notification
+        Notification::make()
+            ->title('Check-in registrado correctamente')
+            ->body('El check-in para ' . $this->client->name . ' ha sido registrado exitosamente.')
+            ->success()
+            ->send();
+    }
+
     public function render()
     {
         return view('livewire.client.info-modal');

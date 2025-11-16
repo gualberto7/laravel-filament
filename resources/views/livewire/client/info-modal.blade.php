@@ -37,7 +37,7 @@
             </div>
         @endif
         <x-slot name="footerActions">
-            <x-filament::button>
+            <x-filament::button wire:click="checkIn">
                 Check In
             </x-filament::button>
         </x-slot>
