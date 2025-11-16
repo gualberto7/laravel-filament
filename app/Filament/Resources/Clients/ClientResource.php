@@ -17,20 +17,14 @@ use App\Filament\Resources\Clients\Pages\ListClients;
 use App\Filament\Resources\Clients\Pages\CreateClient;
 use App\Filament\Resources\Clients\Pages\EditClient;
 use App\Filament\Resources\Clients\Pages\ViewClient;
-use App\Filament\Resources\ClientResource\Pages;
-use App\Filament\Resources\ClientResource\RelationManagers;
 use App\Models\Client;
-use Filament\Forms;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Model;
-use Filament\Infolists;
 use App\Livewire\CheckIn\Index;
 use App\Filament\Traits\HasPagination;
-use Filament\GlobalSearch\Actions\Action;
+use Filament\Actions\Action;
+use Illuminate\Database\Eloquent\Builder;
 
 class ClientResource extends Resource
 {
@@ -182,6 +176,11 @@ class ClientResource extends Resource
         ];
     }
 
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['subscriptions']);
+    }
+
     public static function getGloballySearchableAttributes(): array
     {
         return ['name', 'card_id'];
@@ -189,13 +188,23 @@ class ClientResource extends Resource
 
     public static function getGlobalSearchResultDetails(Model $record): array
     {
+        $subscription = $record->subscriptions->first();
         return [
             'Carnet' => $record->card_id,
+            'Estado' => $subscription ? $subscription->status : 'No activo'
         ];
     }
 
     public static function getGlobalSearchResultUrl(Model $record): string
     {
         return ClientResource::getUrl('view', ['record' => $record]);
+    }
+
+    public static function getGlobalSearchResultActions(Model $record): array
+    {
+        return [
+            Action::make('checkin')
+                ->dispatch('addCheckin', [$record])
+        ];
     }
 }
