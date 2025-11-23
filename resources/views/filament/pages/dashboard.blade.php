@@ -1,5 +1,5 @@
 <x-filament-panels::page>
-    <x-filament::section class="h-[calc(100vh-40rem)]">
+    <x-filament::section class="h-100">
         <x-slot name="heading">
             User details
         </x-slot>

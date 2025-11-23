@@ -30,6 +30,18 @@
                     <span class="font-bold">Fecha Fin</span>
                     <span>{{ $subscription->end_date->format('d-m-Y') }}</span>
                 </div>
+
+                <div class="flex flex-col">
+                    <span class="font-bold">Numero Casillero</span>
+                    <div class="w-24">
+                        <x-filament::input.wrapper>
+                            <x-filament::input
+                                type="text"
+                                wire:model="key_number"
+                            />
+                        </x-filament::input.wrapper>
+                    </div>
+                </div>
             </div>
         @else
             <div class="mb-4">
@@ -37,9 +49,11 @@
             </div>
         @endif
         <x-slot name="footerActions">
-            <x-filament::button wire:click="checkIn">
-                Check In
-            </x-filament::button>
+            @if ($subscription)
+                <x-filament::button wire:click="checkIn" disabled="{{ $subscription->status != 'active' }}">
+                    Check In
+                </x-filament::button>
+            @endif
         </x-slot>
     @endif
 </x-filament::modal>

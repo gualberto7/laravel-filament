@@ -11,6 +11,7 @@ class InfoModal extends Component
 {
     public $client;
     public $subscription;
+    public $key_number;
 
     #[On('addCheckin')] 
     public function addCheckin($client)
@@ -22,7 +23,7 @@ class InfoModal extends Component
 
     public function checkIn()
     {
-        $this->client->addCheckIn();
+        $this->client->addCheckIn($this->key_number);
 
         // After registering the check-in, you might want to close the modal
         $this->dispatch('close-modal', id: 'search-client');
