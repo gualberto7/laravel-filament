@@ -31,17 +31,19 @@
                     <span>{{ $subscription->end_date->format('d-m-Y') }}</span>
                 </div>
 
-                <div class="flex flex-col">
-                    <span class="font-bold">Numero Casillero</span>
-                    <div class="w-24">
-                        <x-filament::input.wrapper>
-                            <x-filament::input
-                                type="text"
-                                wire:model="key_number"
-                            />
-                        </x-filament::input.wrapper>
+                @if($register_key)
+                    <div class="flex flex-col">
+                        <span class="font-bold">Numero Casillero</span>
+                        <div class="w-24">
+                            <x-filament::input.wrapper>
+                                <x-filament::input
+                                    type="text"
+                                    wire:model="key_number"
+                                />
+                            </x-filament::input.wrapper>
+                        </div>
                     </div>
-                </div>
+                @endif
             </div>
         @else
             <div class="mb-4">
