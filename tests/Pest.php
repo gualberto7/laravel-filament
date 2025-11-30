@@ -25,6 +25,12 @@ pest()->extend(Tests\TestCase::class)
     ->in('Feature', 'Unit')
     ->beforeEach(function () {
         $this->seed(\Database\Seeders\ShieldSeeder::class);
+
+        $this->user = \App\Models\User::factory()->create();
+        $this->gym = \App\Models\Gym::factory()->create(['user_id' => $this->user->id]);
+        $this->actingAs($this->user);
+
+        $this->user->setPreference('current_gym', $this->gym->id);
     });
 
 /*

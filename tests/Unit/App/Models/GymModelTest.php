@@ -7,13 +7,7 @@ use App\Models\CheckIn;
 use App\Models\Membership;
 
 
-beforeEach(function () {
-    $this->user = User::factory()->create();
-    $this->gym = Gym::factory()->create(['user_id' => $this->user->id]);
-    $this->actingAs($this->user);
 
-    $this->user->setPreference('current_gym', $this->gym->id);
-});
 
 // A gym has a owner
 describe('Gym relationships', function () {

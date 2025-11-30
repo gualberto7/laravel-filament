@@ -1,16 +1,6 @@
 <?php
 
 use App\Models\Membership;
-use App\Models\Gym;
-use App\Models\User;
-
-beforeEach(function () {
-    $this->gym = Gym::factory()->create();
-    $this->user = User::factory()->create();
-    $this->actingAs($this->user);
-    
-    $this->user->setPreference('current_gym', $this->gym->id);
-});
 
 describe('Membership Active Status', function () {
     it('returns true for active non-promo memberships', function () {
