@@ -6,7 +6,6 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms;
 use Livewire\Component;
 use App\Enums\GymPreferences;
 use Livewire\Attributes\Computed;
@@ -54,25 +53,31 @@ class Settings extends Component implements HasForms, HasActions
 
     public function update(): void
     {
-        $this->preferences->each(function ($item) {
-            if (in_array($item->key, $this->form->getState()['preferences'])) {
-                $item->value = true;
-            } else {
-                $item->value = false;
-            }
-            $item->save();
-        });
+        $selectedPreferences = $this->form->getState()['preferences'] ?? [];
+
+        $selectedValues = collect($selectedPreferences)->map(function ($item) {
+            return $item instanceof \UnitEnum ? $item->value : $item;
+        })->toArray();
+
+        foreach (GymPreferences::cases() as $preference) {
+            $key = $preference->value;
+            $value = in_array($key, $selectedValues);
+
+            $this->currentGym->setPreference($key, $value);
+        }
 
         Notification::make()
             ->title('Cambios guardados')
             ->success()
             ->send();
+
+        $this->initialState = $this->form->getState();
     }
 
     #[Computed]
     public function isDirty()
     {
-        return $this->initialState == $this->form->getState();
+        return $this->initialState === $this->form->getState();
     }
 
     public function render()
