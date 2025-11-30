@@ -3,7 +3,7 @@
 namespace App\Livewire\Client;
 
 use App\Models\Client;
-//use App\Models\Gym;
+use App\Models\Gym;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Filament\Notifications\Notification;
@@ -13,15 +13,14 @@ class InfoModal extends Component
     public $client;
     public $subscription;
     public $key_number;
-    /*public $gym;
+    public $gym;
     public $register_key;
 
     public function mount()
     {
         $this->gymId = auth()->user() ? auth()->user()->getCurrentGymId() : null;
         $this->register_key = Gym::findOrFail($this->gymId)->getPreference('register_key');
-        var_dump($this->register_key);
-    }*/
+    }
 
     #[On('addCheckin')]
     public function addCheckin($client)
