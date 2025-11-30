@@ -12,7 +12,7 @@ use App\Models\Traits\HasPreferences;
 class Gym extends Model
 {
     use HasFactory, HasUuids, HasPreferences;
-    
+
     protected $fillable = [
         'name',
         'address',
@@ -30,7 +30,7 @@ class Gym extends Model
         return $this->hasMany(User::class);
     }
 
-    public function activeStaff(): BelongsToMany
+    public function activeStaff(): HasMany
     {
         return $this->staff()->where('is_active', true);
     }

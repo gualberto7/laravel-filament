@@ -39,3 +39,11 @@ describe('Gym relationships', function () {
         expect($this->gym->checkIns->first())->toBeInstanceOf(CheckIn::class);
     });
 });
+
+describe('Gym preferences', function () {
+    test('gym can set and get a preference', function () {
+        $gym = Gym::factory()->create();
+        $gym->setPreference('theme', 'dark');
+        expect($gym->getPreference('theme'))->toBe('dark');
+    });
+});
