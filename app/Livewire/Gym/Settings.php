@@ -37,7 +37,7 @@ class Settings extends Component implements HasForms, HasActions
             'preferences' => $preferences,
         ]);
 
-        $this->initialState = $this->form->getState();
+        $this->initialState = $this->data;
     }
 
     public function form(Schema $schema): Schema
@@ -54,14 +54,17 @@ class Settings extends Component implements HasForms, HasActions
 
     public function update(): void
     {
-        $this->preferences->each(function ($item) {
-            if (in_array($item->key, $this->form->getState()['preferences'])) {
-                $item->value = true;
-            } else {
-                $item->value = false;
-            }
-            $item->save();
-        });
+        $selectedPreferences = $this->data['preferences'] ?? [];
+
+        foreach (GymPreferences::cases() as $case) {
+            $this->currentGym->setPreference(
+                $case->value,
+                in_array($case->value, $selectedPreferences),
+            );
+        }
+
+        $this->preferences = $this->currentGym->preferences()->get();
+        $this->initialState = $this->data;
 
         Notification::make()
             ->title('Cambios guardados')
@@ -72,7 +75,7 @@ class Settings extends Component implements HasForms, HasActions
     #[Computed]
     public function isDirty()
     {
-        return $this->initialState == $this->form->getState();
+        return $this->initialState == $this->data;
     }
 
     public function render()
