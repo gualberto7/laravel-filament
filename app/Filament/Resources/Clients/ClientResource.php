@@ -75,6 +75,7 @@ class ClientResource extends Resource
                 TextColumn::make('subscriptions.status')
                     ->label('Suscripción')
                     ->badge()
+                    ->state(fn (Client $record): ?string => $record->subscriptions->sortByDesc('created_at')->first()?->status)
                     ->color(fn (string $state): string => match ($state) {
                         'active' => 'success',
                         'inactive' => 'danger',
@@ -130,8 +131,12 @@ class ClientResource extends Resource
                     ->columnSpanFull(),
 
                 Section::make('Suscripciones')
-                    ->description('Subscripciones actuales del cliente, para ver el historial de suscripciones, haga click aquí')
+                    ->description('Últimas 4 suscripciones del cliente')
                     ->headerActions([
+                        \Filament\Actions\Action::make('ver_todas')
+                            ->label('Ver todas')
+                            ->url(fn (Client $record): string => SubscriptionResource::getUrl('index') . '?' . http_build_query(['filters' => ['client' => ['value' => $record->id]]]))
+                            ->color('gray'),
                         \Filament\Actions\Action::make('create')
                             ->label('Crear Suscripción')
                             ->url(fn (Client $record): string => SubscriptionResource::getUrl('create', ['client_id' => $record->id])),
@@ -139,6 +144,7 @@ class ClientResource extends Resource
                     ->schema([
                         RepeatableEntry::make('subscriptions')
                             ->label('')
+                            ->state(fn (Client $record) => $record->subscriptions->sortByDesc('created_at')->take(4))
                             ->columns(2)
                             ->schema([
                                 TextEntry::make('status')

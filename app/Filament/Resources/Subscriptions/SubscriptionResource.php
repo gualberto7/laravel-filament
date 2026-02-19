@@ -189,6 +189,11 @@ class SubscriptionResource extends Resource
                 SelectFilter::make('membership.name')
                     ->relationship('membership', 'name')
                     ->label('Membresia'),
+                SelectFilter::make('client')
+                    ->relationship('clients', 'name')
+                    ->label('Cliente')
+                    ->searchable()
+                    ->preload(),
             ])
             ->recordActions([
                 /* Tables\Actions\Action::make('checkIn')
