@@ -24,7 +24,6 @@ use Illuminate\Database\Eloquent\Model;
 use App\Livewire\CheckIn\Index;
 use App\Filament\Traits\HasPagination;
 use Filament\Actions\Action;
-use Illuminate\Database\Eloquent\Builder;
 
 class ClientResource extends Resource
 {
@@ -33,10 +32,15 @@ class ClientResource extends Resource
     protected static ?string $model = Client::class;
 
     protected static ?string $navigationLabel = 'Clientes';
-    protected static string | \UnitEnum | null $navigationGroup = 'Gestion';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Gestion';
+
     protected static ?int $navigationSort = 1;
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-user-group';
+
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
+
     protected static ?string $recordTitleAttribute = 'name';
+
     protected static int $globalSearchResultsLimit = 5;
 
     public static function form(Schema $schema): Schema
@@ -121,7 +125,8 @@ class ClientResource extends Resource
                         TextEntry::make('created_by'),
                         TextEntry::make('updated_by'),
                     ])
-                    ->columns(3),
+                    ->columns(3)
+                    ->columnSpanFull(),
 
                 Section::make('Suscripciones')
                     ->description('Subscripciones actuales del cliente, para ver el historial de suscripciones, haga click aquí')
@@ -151,7 +156,8 @@ class ClientResource extends Resource
                                     ->prefix('Bs. '),
                             ])
                             ->grid(2),
-                    ]),
+                    ])
+                    ->columnSpanFull(),
 
                 Section::make('Check-in')
                     ->description('Check-in del cliente')
@@ -161,8 +167,9 @@ class ClientResource extends Resource
                             ->url(fn (Client $record): string => ClientResource::getUrl('view', ['record' => $record])),
                     ])
                     ->schema([
-                        Livewire::make(Index::class)
-                    ]),
+                        Livewire::make(Index::class),
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -197,7 +204,7 @@ class ClientResource extends Resource
     {
         return [
             Action::make('checkin')
-                ->dispatch('addCheckin', [$record->id])
+                ->dispatch('addCheckin', [$record->id]),
         ];
     }
 }

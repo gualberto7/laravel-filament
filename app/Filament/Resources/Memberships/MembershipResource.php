@@ -19,13 +19,9 @@ use App\Filament\Resources\Memberships\Pages\ListMemberships;
 use App\Filament\Resources\Memberships\Pages\CreateMembership;
 use App\Filament\Resources\Memberships\Pages\EditMembership;
 use App\Filament\Resources\Memberships\Pages\ViewMembership;
-use App\Filament\Resources\MembershipResource\Pages;
 use App\Models\Membership;
-use Filament\Forms;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Infolists;
 use Illuminate\Database\Eloquent\Model;
 
 class MembershipResource extends Resource
@@ -33,9 +29,12 @@ class MembershipResource extends Resource
     protected static ?string $model = Membership::class;
 
     protected static ?string $navigationLabel = 'Membresías';
-    protected static string | \UnitEnum | null $navigationGroup = 'Gestion';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Gestion';
+
     protected static ?int $navigationSort = 3;
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-ticket';
+
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-ticket';
 
     public static function form(Schema $schema): Schema
     {
@@ -60,8 +59,10 @@ class MembershipResource extends Resource
                         $price = $get('price');
                         if ($price) {
                             $installments = $price / $state;
-                            return 'Paga en ' . $state . ' cuotas de ' . $installments . ' Bs.';
+
+                            return 'Paga en '.$state.' cuotas de '.$installments.' Bs.';
                         }
+
                         return '';
                     })
                     ->live()
@@ -179,7 +180,8 @@ class MembershipResource extends Resource
                             ->label('Fecha de actualización')
                             ->dateTime('d-m-Y H:i'),
                     ])
-                    ->columns(3),
+                    ->columns(3)
+                    ->columnSpanFull(),
             ]);
     }
 
