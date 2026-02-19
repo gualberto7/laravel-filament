@@ -13,6 +13,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Schemas\Components\Livewire;
+use App\Filament\Resources\Subscriptions\SubscriptionResource;
 use App\Filament\Resources\Clients\Pages\ListClients;
 use App\Filament\Resources\Clients\Pages\CreateClient;
 use App\Filament\Resources\Clients\Pages\EditClient;
@@ -133,7 +134,7 @@ class ClientResource extends Resource
                     ->headerActions([
                         \Filament\Actions\Action::make('create')
                             ->label('Crear Suscripción')
-                            ->url(fn (Client $record): string => ClientResource::getUrl('create', ['record' => $record])),
+                            ->url(fn (Client $record): string => SubscriptionResource::getUrl('create', ['client_id' => $record->id])),
                     ])
                     ->schema([
                         RepeatableEntry::make('subscriptions')
