@@ -40,11 +40,7 @@ class SubscriptionResource extends Resource
 
     protected static ?string $model = Subscription::class;
 
-    protected static ?string $navigationLabel = 'Suscripciones';
-
-    protected static ?int $navigationSort = 1;
-
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-credit-card';
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Schema $schema): Schema
     {

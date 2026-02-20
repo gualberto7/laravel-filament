@@ -35,9 +35,7 @@ class ClientResource extends Resource
 
     protected static ?string $navigationLabel = 'Clientes';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Gestion';
-
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 
@@ -72,9 +70,12 @@ class ClientResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('card_id'),
+                TextColumn::make('latestSubscription.membership.name')
+                    ->label('Membresía')
+                    ->state(fn (Client $record): ?string => $record->latestSubscription->first()?->membership?->name)
+                    ->default('—'),
                 TextColumn::make('latestSubscription.status')
-                    ->label('Suscripción')
+                    ->label('Estado')
                     ->badge()
                     ->state(fn (Client $record): ?string => $record->latestSubscription->first()?->status)
                     ->color(fn (?string $state): string => match ($state) {
@@ -102,7 +103,7 @@ class ClientResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with('latestSubscription');
+        return parent::getEloquentQuery()->with('latestSubscription.membership');
     }
 
     public static function getRelations(): array
@@ -143,7 +144,7 @@ class ClientResource extends Resource
                     ->headerActions([
                         \Filament\Actions\Action::make('ver_todas')
                             ->label('Ver todas')
-                            ->url(fn (Client $record): string => SubscriptionResource::getUrl('index') . '?' . http_build_query(['filters' => ['client' => ['value' => $record->id]]]))
+                            ->url(fn (Client $record): string => SubscriptionResource::getUrl('index').'?'.http_build_query(['filters' => ['client' => ['value' => $record->id]]]))
                             ->color('gray'),
                         \Filament\Actions\Action::make('create')
                             ->label('Crear Suscripción')
