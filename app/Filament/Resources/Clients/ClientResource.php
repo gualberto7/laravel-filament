@@ -153,7 +153,7 @@ class ClientResource extends Resource
                     ->schema([
                         RepeatableEntry::make('subscriptions')
                             ->label('')
-                            ->state(fn (Client $record) => $record->subscriptions->sortByDesc('created_at')->take(4))
+                            ->state(fn (Client $record) => $record->subscriptions->sortByDesc('created_at')->take(2))
                             ->columns(2)
                             ->schema([
                                 TextEntry::make('status')
@@ -164,6 +164,8 @@ class ClientResource extends Resource
                                         'expires_today' => 'danger',
                                         'expired' => 'gray',
                                     }),
+                                TextEntry::make('membership.name')
+                                    ->label('Membresía'),
                                 TextEntry::make('start_date')
                                     ->dateTime('d-m-Y'),
                                 TextEntry::make('end_date')
