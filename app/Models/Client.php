@@ -21,6 +21,11 @@ class Client extends Model
         return $this->belongsToMany(Subscription::class);
     }
 
+    public function latestSubscription()
+    {
+        return $this->belongsToMany(Subscription::class)->orderByDesc('end_date');
+    }
+
     public function checkIns()
     {
         return $this->hasMany(CheckIn::class);

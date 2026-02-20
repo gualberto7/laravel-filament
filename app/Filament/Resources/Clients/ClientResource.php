@@ -21,6 +21,7 @@ use App\Filament\Resources\Clients\Pages\ViewClient;
 use App\Models\Client;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use App\Livewire\CheckIn\Index;
 use App\Filament\Traits\HasPagination;
@@ -72,14 +73,16 @@ class ClientResource extends Resource
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('card_id'),
-                TextColumn::make('subscriptions.status')
+                TextColumn::make('latestSubscription.status')
                     ->label('Suscripción')
                     ->badge()
-                    ->state(fn (Client $record): ?string => $record->subscriptions->sortByDesc('created_at')->first()?->status)
-                    ->color(fn (string $state): string => match ($state) {
+                    ->state(fn (Client $record): ?string => $record->latestSubscription->first()?->status)
+                    ->color(fn (?string $state): string => match ($state) {
                         'active' => 'success',
-                        'inactive' => 'danger',
-                        default => 'warning',
+                        'expires_soon' => 'warning',
+                        'expires_today' => 'danger',
+                        'expired', 'inactive' => 'gray',
+                        default => 'gray',
                     }),
                 TextColumn::make('phone'),
             ])
@@ -95,6 +98,11 @@ class ClientResource extends Resource
                     DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('latestSubscription');
     }
 
     public static function getRelations(): array
