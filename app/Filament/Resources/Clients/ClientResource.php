@@ -6,7 +6,6 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Schemas\Components\Section;
@@ -92,7 +91,8 @@ class ClientResource extends Resource
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                Action::make('checkin')
+                    ->dispatch('addCheckin', fn ($record) => [$record->id]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
