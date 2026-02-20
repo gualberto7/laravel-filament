@@ -11,15 +11,21 @@ use Filament\Notifications\Notification;
 class InfoModal extends Component
 {
     public $client;
+
     public $subscription;
+
     public $key_number;
+
     public $gym;
+
     public $register_key;
 
     public function mount()
     {
         $user = auth()->user();
-        if(!$user) return;
+        if (! $user) {
+            return;
+        }
         $this->gymId = $user ? $user->getCurrentGymId() : null;
         $this->register_key = Gym::findOrFail($this->gymId)->getPreference('register_key');
     }
@@ -28,7 +34,7 @@ class InfoModal extends Component
     public function addCheckin($client)
     {
         $this->client = Client::find($client);
-        $this->subscription = $this->client->subscriptions->first() ?? null;
+        $this->subscription = $this->client->latestSubscription->first() ?? null;
         $this->dispatch('open-modal', id: 'search-client');
     }
 
@@ -42,7 +48,7 @@ class InfoModal extends Component
         // Optionally, you can also show a success notification
         Notification::make()
             ->title('Check-in registrado correctamente')
-            ->body('El check-in para ' . $this->client->name . ' ha sido registrado exitosamente.')
+            ->body('El check-in para '.$this->client->name.' ha sido registrado exitosamente.')
             ->success()
             ->send();
     }

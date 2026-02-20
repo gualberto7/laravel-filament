@@ -53,8 +53,8 @@ class Client extends Model
 
     public function scopeInactive($query)
     {
-        return $query->whereHas('subscriptions', function ($q) {
-            $q->where('end_date', '<', now());
+        return $query->whereDoesntHave('subscriptions', function ($q) {
+            $q->where('end_date', '>=', now());
         });
     }
 
