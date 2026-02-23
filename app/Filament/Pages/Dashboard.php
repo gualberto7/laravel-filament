@@ -2,7 +2,6 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\CheckinsState;
 use App\Filament\Widgets\StatsOverview;
 use Filament\Pages\Page;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -12,7 +11,9 @@ class Dashboard extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-home';
+
+    protected static ?string $navigationLabel = 'Inicio';
 
     protected string $view = 'filament.pages.dashboard';
 
@@ -24,9 +25,9 @@ class Dashboard extends Page implements HasForms
     }
 
     protected function getHeaderWidgets(): array
-     {
-         return [
+    {
+        return [
             StatsOverview::class,
-         ];
-     }
+        ];
+    }
 }
