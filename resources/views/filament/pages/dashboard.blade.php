@@ -1,11 +1,11 @@
 <x-filament-panels::page>
     <x-filament::section class="h-100">
         <x-slot name="heading">
-            User details
+            Bienvenido de nuevo, {{ auth()->user()->name }}
         </x-slot>
 
         <x-slot name="description">
-            This is all the information we hold about the user.
+            Aquí podrás ver el estado de tus clientes, suscripciones, membresías, etc.
         </x-slot>
 
         <x-slot name="afterHeader">
