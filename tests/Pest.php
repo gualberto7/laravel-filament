@@ -13,7 +13,7 @@
 
 pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->in('Feature', 'Unit')
+    ->in('Feature', 'Unit', 'Browser')
     ->beforeEach(function () {
         $this->seed(\Database\Seeders\ShieldSeeder::class);
     });
