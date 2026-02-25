@@ -17,6 +17,8 @@ use App\Filament\Resources\Clients\Pages\ListClients;
 use App\Filament\Resources\Clients\Pages\CreateClient;
 use App\Filament\Resources\Clients\Pages\EditClient;
 use App\Filament\Resources\Clients\Pages\ViewClient;
+use App\Filament\Resources\Clients\Pages\ClientCheckIns;
+use App\Filament\Resources\Clients\Pages\ClientSubscriptions;
 use App\Models\Client;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
@@ -144,7 +146,7 @@ class ClientResource extends Resource
                     ->headerActions([
                         \Filament\Actions\Action::make('ver_todas')
                             ->label('Ver todas')
-                            ->url(fn (Client $record): string => SubscriptionResource::getUrl('index').'?'.http_build_query(['filters' => ['client' => ['value' => $record->id]]]))
+                            ->url(fn (Client $record): string => ClientResource::getUrl('subscriptions', ['record' => $record]))
                             ->color('gray'),
                         \Filament\Actions\Action::make('create')
                             ->label('Crear Suscripción')
@@ -180,9 +182,9 @@ class ClientResource extends Resource
                 Section::make('Check-in')
                     ->description('Check-in del cliente')
                     ->headerActions([
-                        \Filament\Actions\Action::make('create')
+                        Action::make('ver_todos')
                             ->label('Ver todos los check-in')
-                            ->url(fn (Client $record): string => ClientResource::getUrl('view', ['record' => $record])),
+                            ->url(fn (Client $record): string => ClientResource::getUrl('check-ins', ['record' => $record])),
                     ])
                     ->schema([
                         Livewire::make(Index::class),
@@ -198,6 +200,8 @@ class ClientResource extends Resource
             'create' => CreateClient::route('/create'),
             'edit' => EditClient::route('/{record}/edit'),
             'view' => ViewClient::route('/{record}'),
+            'check-ins' => ClientCheckIns::route('/{record}/check-ins'),
+            'subscriptions' => ClientSubscriptions::route('/{record}/subscriptions'),
         ];
     }
 
