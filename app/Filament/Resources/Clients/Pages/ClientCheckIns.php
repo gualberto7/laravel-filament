@@ -56,8 +56,11 @@ class ClientCheckIns extends Page implements HasTable
             )
             ->columns([
                 TextColumn::make('created_at')
-                    ->label('Fecha y hora')
-                    ->dateTime('d/m/Y H:i'),
+                    ->label('Fecha')
+                    ->date('d/m/Y'),
+                TextColumn::make('updated_at')
+                    ->label('Hora')
+                    ->dateTime('H:i'),
                 TextColumn::make('locker_number')
                     ->label('Caja')
                     ->default('—'),
