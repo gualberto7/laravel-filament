@@ -48,3 +48,22 @@ function something()
 {
     // ..
 }
+
+/**
+ * Create and authenticate a user with a gym and role.
+ *
+ * @return array{user: \App\Models\User, gym: \App\Models\Gym}
+ */
+function loginAs(string $role = 'admin'): array
+{
+    $user = \App\Models\User::factory()->create();
+    $gym = \App\Models\Gym::factory()->create(['user_id' => $user->id]);
+
+    test()->actingAs($user);
+    $user->assignRole($role);
+    $user->setPreference('current_gym', $gym->id);
+
+    \Filament\Facades\Filament::setCurrentPanel(\Filament\Facades\Filament::getPanel('admin'));
+
+    return compact('user', 'gym');
+}

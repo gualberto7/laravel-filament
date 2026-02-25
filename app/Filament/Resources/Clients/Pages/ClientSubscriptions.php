@@ -12,6 +12,8 @@ use Filament\Resources\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -79,6 +81,26 @@ class ClientSubscriptions extends Page implements HasTable
                 TextColumn::make('price')
                     ->label('Precio')
                     ->prefix('Bs. '),
+            ])
+            ->filters([
+                Filter::make('created_at')
+                    ->schema([
+                        DatePicker::make('created_from')
+                            ->label('Desde'),
+                        DatePicker::make('created_until')
+                            ->label('Hasta'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
             ])
             ->recordUrl(fn (Subscription $record): string => SubscriptionResource::getUrl('view', ['record' => $record]));
     }
