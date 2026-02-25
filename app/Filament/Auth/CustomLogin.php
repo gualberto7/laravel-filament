@@ -4,6 +4,7 @@ namespace App\Filament\Auth;
 
 use Filament\Schemas\Schema;
 use Filament\Auth\Pages\Login;
+use Filament\Support\Icons\Heroicon;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Validation\ValidationException;
 
@@ -15,9 +16,21 @@ class CustomLogin extends Login
             ->components([
                 TextInput::make('username')
                     ->label('Usuario')
-                    ->required(),
-                $this->getPasswordFormComponent(),
-                $this->getRememberFormComponent()
+                    ->required()
+                    ->extraInputAttributes([
+                        'data-test' => 'username-input',
+                    ]),
+
+                TextInput::make('password')
+                    ->label('Contraseña')
+                    ->required()
+                    ->password()
+                    // ->suffixIcon(Heroicon::Eye)
+                    ->extraInputAttributes([
+                        'data-test' => 'password-input',
+                    ]),
+
+                // $this->getRememberFormComponent(),
             ]);
     }
 
@@ -32,7 +45,7 @@ class CustomLogin extends Login
     protected function throwFailureValidationException(): never
     {
         throw ValidationException::withMessages([
-            'data.username' => __('filament-panels::pages/auth/login.messages.failed'),
+            'data.username' => __('Credenciales incorrectas'),
         ]);
     }
 }
