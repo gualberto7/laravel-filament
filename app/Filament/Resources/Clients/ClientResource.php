@@ -17,6 +17,7 @@ use App\Filament\Resources\Clients\Pages\ListClients;
 use App\Filament\Resources\Clients\Pages\CreateClient;
 use App\Filament\Resources\Clients\Pages\EditClient;
 use App\Filament\Resources\Clients\Pages\ViewClient;
+use App\Filament\Resources\Clients\Pages\ClientCheckIns;
 use App\Models\Client;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
@@ -180,9 +181,9 @@ class ClientResource extends Resource
                 Section::make('Check-in')
                     ->description('Check-in del cliente')
                     ->headerActions([
-                        \Filament\Actions\Action::make('create')
+                        Action::make('ver_todos')
                             ->label('Ver todos los check-in')
-                            ->url(fn (Client $record): string => ClientResource::getUrl('view', ['record' => $record])),
+                            ->url(fn (Client $record): string => ClientResource::getUrl('check-ins', ['record' => $record])),
                     ])
                     ->schema([
                         Livewire::make(Index::class),
@@ -198,6 +199,7 @@ class ClientResource extends Resource
             'create' => CreateClient::route('/create'),
             'edit' => EditClient::route('/{record}/edit'),
             'view' => ViewClient::route('/{record}'),
+            'check-ins' => ClientCheckIns::route('/{record}/check-ins'),
         ];
     }
 
