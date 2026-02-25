@@ -4,7 +4,6 @@ namespace App\Filament\Auth;
 
 use Filament\Schemas\Schema;
 use Filament\Auth\Pages\Login;
-use Filament\Support\Icons\Heroicon;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Validation\ValidationException;
 
@@ -25,7 +24,7 @@ class CustomLogin extends Login
                     ->label('Contraseña')
                     ->required()
                     ->password()
-                    // ->suffixIcon(Heroicon::Eye)
+                    ->revealable()
                     ->extraInputAttributes([
                         'data-test' => 'password-input',
                     ]),
