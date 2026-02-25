@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\User;
-
 describe('Authentication', function () {
     test('the login page loads correctly', function () {
         $page = visit('/admin/login');
@@ -9,17 +7,13 @@ describe('Authentication', function () {
         $page->assertSee('Usuario');
     });
 
-    /*test('can login with valid credentials', function () {
-        $user = User::factory()->create([
-            'username' => 'admin',
-        ]);
-
+    test('can login with valid credentials', function () {
         $page = visit('/admin/login');
 
-        $page->type('#form.username', $user->username)
-            ->type('#form.password', 'password')
+        $page->type('@username-input', 'admin')
+            ->type('@password-input', 'password')
             ->press('Entrar');
 
-        $page->assertSee('Dashboard');
-    });*/
+        $page->assertSee('Credenciales incorrectas');
+    });
 });
