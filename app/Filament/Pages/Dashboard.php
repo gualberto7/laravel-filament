@@ -15,6 +15,8 @@ class Dashboard extends Page implements HasForms
 
     protected static ?string $navigationLabel = 'Inicio';
 
+    protected static ?string $title = 'Inicio';
+
     protected string $view = 'filament.pages.dashboard';
 
     public $currentGym;
