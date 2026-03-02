@@ -4,20 +4,21 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Exception;
+use Filament\Panel;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Traits\HasPreferences;
+use Filament\Models\Contracts\FilamentUser;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasUuids, HasRoles, HasPreferences;
+    use HasFactory, HasPreferences, HasRoles, HasUuids, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -59,7 +60,7 @@ class User extends Authenticatable
         return $this->belongsTo(Gym::class);
     }
 
-    public function ownedGym() : HasOne
+    public function ownedGym(): HasOne
     {
         return $this->hasOne(Gym::class);
     }
@@ -68,11 +69,11 @@ class User extends Authenticatable
     {
         $gym = $this->ownedGym;
 
-        if (!$gym) {
+        if (! $gym) {
             $gym = $this->gym;
         }
 
-        if (!$gym) {
+        if (! $gym) {
             throw new Exception('User does not have an owned gym or gym');
         }
 
@@ -85,11 +86,17 @@ class User extends Authenticatable
     {
         $gymId = $this->getPreference('current_gym');
 
-        if (!$gymId) {
+        if (! $gymId) {
             $this->setCurrentGym();
+
             return $this->getPreference('current_gym');
         }
 
         return $gymId;
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true; // $this->hasRole('admin');
     }
 }
