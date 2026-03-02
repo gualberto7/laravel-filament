@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Gym;
+use App\Models\User;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -56,14 +59,28 @@ function something()
  */
 function loginAs(string $role = 'admin'): array
 {
-    $user = \App\Models\User::factory()->create();
-    $gym = \App\Models\Gym::factory()->create(['user_id' => $user->id]);
+    $user = User::factory()->create();
+    $gym = Gym::factory()->create(['user_id' => $user->id]);
 
     test()->actingAs($user);
     $user->assignRole($role);
     $user->setPreference('current_gym', $gym->id);
 
     \Filament\Facades\Filament::setCurrentPanel(\Filament\Facades\Filament::getPanel('admin'));
+
+    return compact('user', 'gym');
+}
+
+/**
+ * Set up an existing user with a role and current gym preference.
+ * Use this in browser tests where actingAs() is not available.
+ *
+ * @return array{user: \App\Models\User, gym: \App\Models\Gym}
+ */
+function setupUser(User $user, Gym $gym, string $role = 'admin'): array
+{
+    $user->assignRole($role);
+    $user->setPreference('current_gym', $gym->id);
 
     return compact('user', 'gym');
 }
