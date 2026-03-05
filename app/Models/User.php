@@ -68,8 +68,12 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(Gym::class);
     }
 
-    public function setCurrentGym()
+    public function setCurrentGym(): ?string
     {
+        if ($this->hasRole('super_admin')) {
+            return null;
+        }
+
         $gym = $this->ownedGym;
 
         if (! $gym) {

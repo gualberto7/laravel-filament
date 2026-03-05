@@ -20,13 +20,19 @@ class InfoModal extends Component
 
     public $register_key;
 
-    public function mount()
+    public function mount(): void
     {
         $user = auth()->user();
         if (! $user) {
             return;
         }
-        $this->gymId = $user ? $user->getCurrentGymId() : null;
+
+        $this->gymId = $user->getCurrentGymId();
+
+        if (! $this->gymId) {
+            return;
+        }
+
         $this->register_key = Gym::findOrFail($this->gymId)->getPreference('register_key');
     }
 
