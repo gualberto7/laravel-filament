@@ -99,11 +99,14 @@ class SubscriptionResource extends Resource
                             ->relationship('clients', 'name')
                             ->createOptionForm([
                                 TextInput::make('name')
+                                    ->label('Nombre')
                                     ->required()
                                     ->maxLength(255),
                                 TextInput::make('card_id')
+                                    ->label('Nro. de carnet')
                                     ->required(),
                                 TextInput::make('phone')
+                                    ->label('Celular')
                                     ->required()
                                     ->maxLength(255),
                             ])

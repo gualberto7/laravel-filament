@@ -54,17 +54,20 @@ class ClientResource extends Resource
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Nombre Completo')
                     ->required()
                     ->maxLength(255),
                 TextInput::make('card_id')
-                    ->required()
-                    ->maxLength(255),
-                TextInput::make('email')
-                    ->email()
+                    ->label('Nro. de carnet')
                     ->required()
                     ->maxLength(255),
                 TextInput::make('phone')
+                    ->label('Celular')
                     ->required()
+                    ->maxLength(255),
+                TextInput::make('email')
+                    ->label('Correo electrónico')
+                    ->email()
                     ->maxLength(255),
             ]);
     }
