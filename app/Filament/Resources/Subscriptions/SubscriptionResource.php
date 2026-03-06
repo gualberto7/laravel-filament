@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use App\Models\Client;
 use App\Models\Membership;
 use App\Models\Subscription;
-
 use Filament\Tables\Table;
 use Filament\Schemas\Schema;
 use Filament\Actions\Action;
@@ -23,11 +22,9 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\DatePicker;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Infolists\Components\RepeatableEntry;
-
 use App\Filament\Traits\HasPagination;
 use App\Filament\Resources\Subscriptions\Pages\EditSubscription;
 use App\Filament\Resources\Subscriptions\Pages\ViewSubscription;
@@ -149,6 +146,7 @@ class SubscriptionResource extends Resource
                                 Select::make('method')
                                     ->options([
                                         'cash' => 'Efectivo',
+                                        'qr' => 'QR',
                                         'card' => 'Tarjeta',
                                     ])
                                     ->required(),
@@ -276,6 +274,7 @@ class SubscriptionResource extends Resource
                                 Select::make('method')
                                     ->options([
                                         'cash' => 'Efectivo',
+                                        'qr' => 'QR',
                                         'card' => 'Tarjeta',
                                     ])
                                     ->required(),
