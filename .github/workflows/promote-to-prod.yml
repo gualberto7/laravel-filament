@@ -1,0 +1,29 @@
+name: Open PR to prod
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  open-pr:
+    name: Open PR main → prod
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create Pull Request to prod
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: main
+          destination_branch: prod
+          pr_title: "chore: promote main to prod"
+          pr_body: |
+            Automated PR to promote `main` into `prod`.
+
+            Merge this PR when you are ready to deploy.
+          github_token: ${{ secrets.GITHUB_TOKEN }}
