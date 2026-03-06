@@ -78,11 +78,14 @@ class Membership extends Model
     public static function getActivePromosQuery($query)
     {
         return $query->where(function ($query) {
-            $query->where('is_promo', false)
-                  ->orWhere(function ($query) {
-                      $query->where('is_promo', true)
-                            ->whereDate('promo_end_date', '>=', now()->toDateString());
-                  });
+            $query->where(function ($q) {
+                $q->where('is_promo', false)
+                  ->where('active', true);
+            })->orWhere(function ($q) {
+                $q->where('is_promo', true)
+                  ->whereDate('promo_start_date', '<=', now())
+                  ->whereDate('promo_end_date', '>=', now());
+            });
         });
     }
 }

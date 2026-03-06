@@ -220,4 +220,50 @@ describe('Active Promos Query', function () {
 
         expect($results->pluck('id'))->toContain($promoEndingToday->id);
     });
+
+    it('excludes inactive non-promo memberships', function () {
+        $inactiveMembership = Membership::factory()->create([
+            'is_promo' => false,
+            'active' => false,
+            'gym_id' => $this->gym->id,
+        ]);
+
+        $query = Membership::withoutGlobalScope('gym')->where('gym_id', $this->gym->id);
+        Membership::getActivePromosQuery($query);
+        $results = $query->get();
+
+        expect($results->pluck('id'))->not->toContain($inactiveMembership->id);
+    });
+
+    it('includes promo within date range even if active is false', function () {
+        $inactivePromoWithinRange = Membership::factory()->create([
+            'is_promo' => true,
+            'active' => false,
+            'promo_start_date' => now()->subDays(5),
+            'promo_end_date' => now()->addDays(5),
+            'gym_id' => $this->gym->id,
+        ]);
+
+        $query = Membership::withoutGlobalScope('gym')->where('gym_id', $this->gym->id);
+        Membership::getActivePromosQuery($query);
+        $results = $query->get();
+
+        expect($results->pluck('id'))->toContain($inactivePromoWithinRange->id);
+    });
+
+    it('excludes promo that has not started yet', function () {
+        $futurePromo = Membership::factory()->create([
+            'is_promo' => true,
+            'active' => true,
+            'promo_start_date' => now()->addDays(1),
+            'promo_end_date' => now()->addDays(10),
+            'gym_id' => $this->gym->id,
+        ]);
+
+        $query = Membership::withoutGlobalScope('gym')->where('gym_id', $this->gym->id);
+        Membership::getActivePromosQuery($query);
+        $results = $query->get();
+
+        expect($results->pluck('id'))->not->toContain($futurePromo->id);
+    });
 });
