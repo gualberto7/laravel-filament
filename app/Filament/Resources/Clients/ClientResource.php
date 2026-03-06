@@ -12,6 +12,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Schemas\Components\Livewire;
+use App\Filament\Resources\CheckIns\CheckInResource;
 use App\Filament\Resources\Subscriptions\SubscriptionResource;
 use App\Filament\Resources\Clients\Pages\ListClients;
 use App\Filament\Resources\Clients\Pages\CreateClient;
@@ -185,11 +186,11 @@ class ClientResource extends Resource
                     ])
                     ->columnSpanFull(),
 
-                Section::make('Check-in')
-                    ->description('Check-in del cliente')
+                Section::make(CheckInResource::getModelLabel())
+                    ->description(CheckInResource::getModelLabel().' del cliente')
                     ->headerActions([
                         Action::make('ver_todos')
-                            ->label('Ver todos los check-in')
+                            ->label('Ver todos los '.CheckInResource::getPluralModelLabel())
                             ->url(fn (Client $record): string => ClientResource::getUrl('check-ins', ['record' => $record])),
                     ])
                     ->schema([

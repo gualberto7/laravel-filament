@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Clients\Pages;
 
+use App\Filament\Resources\CheckIns\CheckInResource;
 use App\Filament\Resources\Clients\ClientResource;
 use App\Filament\Traits\HasPagination;
 use App\Models\CheckIn;
@@ -33,7 +34,7 @@ class ClientCheckIns extends Page implements HasTable
 
     public function getTitle(): string
     {
-        return 'Check-ins de '.$this->getRecord()->name;
+        return CheckInResource::getPluralModelLabel().' de '.$this->getRecord()->name;
     }
 
     protected function getHeaderActions(): array
@@ -62,7 +63,7 @@ class ClientCheckIns extends Page implements HasTable
                     ->label('Hora')
                     ->dateTime('H:i'),
                 TextColumn::make('locker_number')
-                    ->label('Caja')
+                    ->label('Casillero')
                     ->default('—'),
                 TextColumn::make('created_by')
                     ->label('Registrado por'),
