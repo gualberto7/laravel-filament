@@ -8,6 +8,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Actions\ViewAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\BulkActionGroup;
@@ -28,6 +29,10 @@ class MembershipResource extends Resource
 {
     protected static ?string $model = Membership::class;
 
+    protected static ?string $modelLabel = 'Membresía';
+
+    protected static ?string $pluralModelLabel = 'Membresías';
+
     protected static ?string $navigationLabel = 'Membresías';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Gestion';
@@ -42,17 +47,29 @@ class MembershipResource extends Resource
             ->components([
                 TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->extraInputAttributes([
+                        'data-test' => 'name-input',
+                    ]),
                 TextInput::make('price')
                     ->prefix('Bs.')
                     ->numeric()
-                    ->required(),
+                    ->required()
+                    ->extraInputAttributes([
+                        'data-test' => 'price-input',
+                    ]),
                 TextInput::make('duration')
                     ->prefix('Días')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->extraInputAttributes([
+                        'data-test' => 'duration-input',
+                    ]),
                 Checkbox::make('active')
-                    ->label('Activo?'),
+                    ->label('Activo?')
+                    ->extraInputAttributes([
+                        'data-test' => 'active-input',
+                    ]),
                 TextInput::make('max_installments')
                     ->label('Paga en cuotas')
                     ->hint(function ($state, Get $get): string {
@@ -68,30 +85,51 @@ class MembershipResource extends Resource
                     ->live()
                     ->required()
                     ->numeric()
-                    ->default(1),
+                    ->default(1)
+                    ->extraInputAttributes([
+                        'data-test' => 'max_installments-input',
+                    ]),
                 Checkbox::make('has_max_checkins')
                     ->label('Maximo de checkins?')
-                    ->live(),
+                    ->live()
+                    ->extraInputAttributes([
+                        'data-test' => 'has_max_checkins-input',
+                    ]),
                 TextInput::make('max_checkins')
                     ->label('Máx. checkins')
                     ->numeric()
                     ->required()
-                    ->visible(fn (Get $get): bool => $get('has_max_checkins')),
+                    ->visible(fn (Get $get): bool => $get('has_max_checkins'))
+                    ->extraInputAttributes([
+                        'data-test' => 'max_checkins-input',
+                    ]),
                 Checkbox::make('is_promo')
                     ->label('Promo?')
-                    ->live(),
+                    ->live()
+                    ->extraInputAttributes([
+                        'data-test' => 'is_promo-input',
+                    ]),
                 DatePicker::make('promo_start_date')
                     ->label('Fecha de inicio de promo')
-                    ->visible(fn (Get $get): bool => $get('is_promo')),
+                    ->visible(fn (Get $get): bool => $get('is_promo'))
+                    ->extraInputAttributes([
+                        'data-test' => 'promo_start_date-input',
+                    ]),
                 DatePicker::make('promo_end_date')
                     ->label('Fecha de fin de promo')
-                    ->visible(fn (Get $get): bool => $get('is_promo')),
+                    ->visible(fn (Get $get): bool => $get('is_promo'))
+                    ->extraInputAttributes([
+                        'data-test' => 'promo_end_date-input',
+                    ]),
                 TextInput::make('max_clients')
                     ->label('Máx. clientes')
                     ->default(1)
                     ->numeric()
                     ->required()
-                    ->visible(fn (Get $get): bool => $get('is_promo')),
+                    ->visible(fn (Get $get): bool => $get('is_promo'))
+                    ->extraInputAttributes([
+                        'data-test' => 'max_clients-input',
+                    ]),
             ]);
     }
 
@@ -111,6 +149,9 @@ class MembershipResource extends Resource
                     ->badge()
                     ->color(fn (string $state): string => $state ? 'success' : 'gray')
                     ->formatStateUsing(fn (string $state): string => $state ? 'Promoción' : 'Normal'),
+                IconColumn::make('is_active')
+                    ->label('Activo?')
+                    ->boolean(),
             ])
             ->defaultSort('price', 'asc')
             ->filters([

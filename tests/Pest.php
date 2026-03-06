@@ -2,6 +2,10 @@
 
 use App\Models\Gym;
 use App\Models\User;
+use App\Models\Client;
+use App\Models\Membership;
+use App\Models\Subscription;
+use App\Models\SubscriptionPayment;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,4 +87,25 @@ function setupUser(User $user, Gym $gym, string $role = 'admin'): array
     $user->setPreference('current_gym', $gym->id);
 
     return compact('user', 'gym');
+}
+
+function createClientWithPlan(Gym $gym): array
+{
+    $client = Client::factory()->create(['gym_id' => $gym->id]);
+    $membership = Membership::factory()->create(['gym_id' => $gym->id]);
+    $subscription = Subscription::factory()->create([
+        'membership_id' => $membership->id,
+        'gym_id' => $gym->id,
+        'start_date' => now()->subDays(1),
+        'end_date' => now()->addDays(30),
+    ]);
+    $subscription->clients()->attach($client);
+    SubscriptionPayment::create([
+        'subscription_id' => $subscription->id,
+        'amount' => $membership->price,
+        'method' => 'cash',
+        'status' => 'paid',
+    ]);
+
+    return compact('client', 'membership', 'subscription');
 }

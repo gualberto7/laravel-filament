@@ -34,6 +34,10 @@ class ClientResource extends Resource
 
     protected static ?string $model = Client::class;
 
+    protected static ?string $modelLabel = 'Cliente';
+
+    protected static ?string $pluralModelLabel = 'Clientes';
+
     protected static ?string $navigationLabel = 'Clientes';
 
     protected static ?int $navigationSort = 2;
@@ -69,6 +73,7 @@ class ClientResource extends Resource
         return static::applyPagination($table)
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('latestSubscription.membership.name')
@@ -86,7 +91,8 @@ class ClientResource extends Resource
                         'expired', 'inactive' => 'gray',
                         default => 'gray',
                     }),
-                TextColumn::make('phone'),
+                TextColumn::make('phone')
+                    ->label('Celular'),
             ])
             ->filters([
                 //

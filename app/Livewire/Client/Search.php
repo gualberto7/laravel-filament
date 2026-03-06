@@ -11,15 +11,19 @@ use Livewire\Component;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Concerns\InteractsWithForms;
 
-class Search extends Component implements HasForms, HasActions
+class Search extends Component implements HasActions, HasForms
 {
     use InteractsWithActions;
     use InteractsWithForms;
 
     public $currentGym;
+
     public $search;
+
     public $data = [];
+
     public $client;
+
     public $subscription;
 
     public function mount($currentGym)
@@ -45,7 +49,7 @@ class Search extends Component implements HasForms, HasActions
                             $this->client = null;
                             $this->subscription = null;
                         }
-                    })
+                    }),
             ])
             ->statePath('data');
     }
