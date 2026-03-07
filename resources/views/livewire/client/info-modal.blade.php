@@ -33,7 +33,7 @@
 
                 @if($register_key)
                     <div class="flex flex-col">
-                        <span class="font-bold">Numero Casillero</span>
+                        <span class="font-bold">Número de casillero</span>
                         <div class="w-24">
                             <x-filament::input.wrapper>
                                 <x-filament::input

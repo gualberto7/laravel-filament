@@ -24,7 +24,9 @@ class ClientFactory extends Factory
             'phone' => fake()->phoneNumber(),
             'address' => fake()->address(),
             'avatar' => fake()->imageUrl(),
-            'gym_id' => Gym::factory()
+            'gym_id' => Gym::factory(),
+            'created_by' => 'Seeder',
+            'updated_by' => 'Seeder',
         ];
     }
 }

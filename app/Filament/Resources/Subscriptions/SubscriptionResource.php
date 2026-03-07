@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use App\Models\Client;
 use App\Models\Membership;
 use App\Models\Subscription;
-
 use Filament\Tables\Table;
 use Filament\Schemas\Schema;
 use Filament\Actions\Action;
@@ -23,12 +22,11 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\DatePicker;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Infolists\Components\RepeatableEntry;
-
 use App\Filament\Traits\HasPagination;
+use Illuminate\Validation\Rule;
 use App\Filament\Resources\Subscriptions\Pages\EditSubscription;
 use App\Filament\Resources\Subscriptions\Pages\ViewSubscription;
 use App\Filament\Resources\Subscriptions\Pages\ListSubscriptions;
@@ -102,11 +100,21 @@ class SubscriptionResource extends Resource
                             ->relationship('clients', 'name')
                             ->createOptionForm([
                                 TextInput::make('name')
+                                    ->label('Nombre')
                                     ->required()
                                     ->maxLength(255),
                                 TextInput::make('card_id')
-                                    ->required(),
+                                    ->label('Nro. de carnet')
+                                    ->required()
+                                    ->rules([
+                                        Rule::unique('clients', 'card_id')
+                                            ->where('gym_id', auth()->user()->getCurrentGymId()),
+                                    ])
+                                    ->validationMessages([
+                                        'unique' => 'Ya existe un cliente con este número de carnet en este gimnasio.',
+                                    ]),
                                 TextInput::make('phone')
+                                    ->label('Celular')
                                     ->required()
                                     ->maxLength(255),
                             ])
@@ -149,6 +157,7 @@ class SubscriptionResource extends Resource
                                 Select::make('method')
                                     ->options([
                                         'cash' => 'Efectivo',
+                                        'qr' => 'QR',
                                         'card' => 'Tarjeta',
                                     ])
                                     ->required(),
@@ -276,6 +285,7 @@ class SubscriptionResource extends Resource
                                 Select::make('method')
                                     ->options([
                                         'cash' => 'Efectivo',
+                                        'qr' => 'QR',
                                         'card' => 'Tarjeta',
                                     ])
                                     ->required(),

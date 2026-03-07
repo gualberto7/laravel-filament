@@ -12,6 +12,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Schemas\Components\Livewire;
+use App\Filament\Resources\CheckIns\CheckInResource;
 use App\Filament\Resources\Subscriptions\SubscriptionResource;
 use App\Filament\Resources\Clients\Pages\ListClients;
 use App\Filament\Resources\Clients\Pages\CreateClient;
@@ -24,6 +25,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 use App\Livewire\CheckIn\Index;
 use App\Filament\Traits\HasPagination;
 use Filament\Actions\Action;
@@ -53,17 +55,28 @@ class ClientResource extends Resource
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Nombre Completo')
                     ->required()
                     ->maxLength(255),
                 TextInput::make('card_id')
+                    ->label('Nro. de carnet')
+                    ->required()
+                    ->maxLength(255)
+                    ->rules(fn ($record) => [
+                        Rule::unique('clients', 'card_id')
+                            ->where('gym_id', auth()->user()->getCurrentGymId())
+                            ->ignore($record?->id),
+                    ])
+                    ->validationMessages([
+                        'unique' => 'Ya existe un cliente con este número de carnet en este gimnasio.',
+                    ]),
+                TextInput::make('phone')
+                    ->label('Celular')
                     ->required()
                     ->maxLength(255),
                 TextInput::make('email')
+                    ->label('Correo electrónico')
                     ->email()
-                    ->required()
-                    ->maxLength(255),
-                TextInput::make('phone')
-                    ->required()
                     ->maxLength(255),
             ]);
     }
@@ -185,11 +198,11 @@ class ClientResource extends Resource
                     ])
                     ->columnSpanFull(),
 
-                Section::make('Check-in')
-                    ->description('Check-in del cliente')
+                Section::make(CheckInResource::getModelLabel())
+                    ->description(CheckInResource::getModelLabel().' del cliente')
                     ->headerActions([
                         Action::make('ver_todos')
-                            ->label('Ver todos los check-in')
+                            ->label('Ver todos los '.CheckInResource::getPluralModelLabel())
                             ->url(fn (Client $record): string => ClientResource::getUrl('check-ins', ['record' => $record])),
                     ])
                     ->schema([

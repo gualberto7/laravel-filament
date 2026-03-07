@@ -24,7 +24,9 @@ class CheckInResource extends Resource
 
     protected static ?string $model = CheckIn::class;
 
-    protected static ?string $navigationLabel = 'Check-ins';
+    protected static ?string $modelLabel = 'Check-in';
+
+    protected static ?string $pluralModelLabel = 'Check-ins';
 
     protected static ?int $navigationSort = 3;
 
@@ -53,7 +55,7 @@ class CheckInResource extends Resource
                     ->label('Fecha y hora')
                     ->dateTime('D d - H:i'),
                 TextColumn::make('locker_number')
-                    ->label('Caja')
+                    ->label('Casillero')
                     ->searchable(),
                 TextColumn::make('created_by')
                     ->label('Creado por'),

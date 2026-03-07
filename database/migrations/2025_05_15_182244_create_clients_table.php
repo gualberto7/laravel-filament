@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->string('card_id')->unique();
+            $table->string('card_id');
+            $table->string('created_by');
+            $table->string('updated_by');
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
