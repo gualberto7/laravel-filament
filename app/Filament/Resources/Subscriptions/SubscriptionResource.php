@@ -26,6 +26,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Infolists\Components\RepeatableEntry;
 use App\Filament\Traits\HasPagination;
+use Illuminate\Validation\Rule;
 use App\Filament\Resources\Subscriptions\Pages\EditSubscription;
 use App\Filament\Resources\Subscriptions\Pages\ViewSubscription;
 use App\Filament\Resources\Subscriptions\Pages\ListSubscriptions;
@@ -104,7 +105,14 @@ class SubscriptionResource extends Resource
                                     ->maxLength(255),
                                 TextInput::make('card_id')
                                     ->label('Nro. de carnet')
-                                    ->required(),
+                                    ->required()
+                                    ->rules([
+                                        Rule::unique('clients', 'card_id')
+                                            ->where('gym_id', auth()->user()->getCurrentGymId()),
+                                    ])
+                                    ->validationMessages([
+                                        'unique' => 'Ya existe un cliente con este número de carnet en este gimnasio.',
+                                    ]),
                                 TextInput::make('phone')
                                     ->label('Celular')
                                     ->required()

@@ -25,6 +25,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 use App\Livewire\CheckIn\Index;
 use App\Filament\Traits\HasPagination;
 use Filament\Actions\Action;
@@ -60,7 +61,15 @@ class ClientResource extends Resource
                 TextInput::make('card_id')
                     ->label('Nro. de carnet')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->rules(fn ($record) => [
+                        Rule::unique('clients', 'card_id')
+                            ->where('gym_id', auth()->user()->getCurrentGymId())
+                            ->ignore($record?->id),
+                    ])
+                    ->validationMessages([
+                        'unique' => 'Ya existe un cliente con este número de carnet en este gimnasio.',
+                    ]),
                 TextInput::make('phone')
                     ->label('Celular')
                     ->required()

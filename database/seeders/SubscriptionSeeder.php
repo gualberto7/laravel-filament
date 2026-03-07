@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Gym;
 use App\Models\Membership;
@@ -18,10 +17,10 @@ class SubscriptionSeeder extends Seeder
     public function run(): void
     {
         $gym = Gym::where('email', 'gym1@example.com')->first();
-        
+
         $memberships = Membership::all();
         $clients = Client::factory()->count(30)->create([
-            'gym_id' => $gym->id
+            'gym_id' => $gym->id,
         ]);
 
         foreach ($clients as $client) {
@@ -29,7 +28,7 @@ class SubscriptionSeeder extends Seeder
             $startDate = Carbon::now()->subDays(rand(0, 30));
             $endDate = $startDate->copy()->addDays(rand(30, 365));
 
-            $subscription = Subscription::create([
+            $subscription = Subscription::factory()->create([
                 'membership_id' => $membership->id,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
@@ -41,6 +40,6 @@ class SubscriptionSeeder extends Seeder
 
             $subscription->clients()->attach($client);
         }
-        
+
     }
 }

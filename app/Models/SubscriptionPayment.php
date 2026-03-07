@@ -10,7 +10,16 @@ class SubscriptionPayment extends Model
 {
     use HasFactory, HasUuids;
 
-    public function subscription()
+    protected static function booted(): void
+    {
+        static::creating(function (SubscriptionPayment $payment) {
+            $name = auth()->user()?->name ?? 'system';
+            $payment->created_by = $name;
+            $payment->updated_by = $name;
+        });
+    }
+
+    public function subscription(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Subscription::class);
     }

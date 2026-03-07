@@ -9,7 +9,7 @@ class CreateSubscription extends CreateRecord
 {
     protected static string $resource = SubscriptionResource::class;
 
-    protected function getFormModel(): string|null
+    protected function getFormModel(): ?string
     {
         return null;
     }
@@ -31,7 +31,7 @@ class CreateSubscription extends CreateRecord
         // Preselect client if client_id is provided in URL
         if (request()->has('client_id')) {
             $this->form->fill([
-                'clients' => [request()->get('client_id')]
+                'clients' => [request()->get('client_id')],
             ]);
         }
     }
@@ -42,6 +42,7 @@ class CreateSubscription extends CreateRecord
         $data['gym_id'] = auth()->user()->getCurrentGymId();
         $data['created_by'] = auth()->user()->name;
         $data['updated_by'] = auth()->user()->name;
+
         return $data;
     }
 
