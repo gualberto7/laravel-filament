@@ -6,6 +6,7 @@ use App\Models\Gym;
 use App\Models\Client;
 use Livewire\Component;
 use Livewire\Attributes\On;
+use App\Filament\Resources\CheckIns\CheckInResource;
 use Filament\Notifications\Notification;
 
 class InfoModal extends Component
@@ -53,8 +54,8 @@ class InfoModal extends Component
 
         // Optionally, you can also show a success notification
         Notification::make()
-            ->title('Check-in registrado correctamente')
-            ->body('El check-in para '.$this->client->name.' ha sido registrado exitosamente.')
+            ->title(CheckInResource::getModelLabel().' registrado correctamente')
+            ->body('El '.CheckInResource::getModelLabel().' para '.$this->client->name.' ha sido registrado exitosamente.')
             ->success()
             ->send();
     }
