@@ -13,7 +13,7 @@ use App\Models\Traits\BelongsToGym;
 class Subscription extends Model
 {
     /** @use HasFactory<SubscriptionFactory> */
-    use HasFactory, HasUuids, BelongsToGym;
+    use BelongsToGym, HasFactory, HasUuids;
 
     protected $casts = [
         'start_date' => 'date',
@@ -47,7 +47,7 @@ class Subscription extends Model
         $now = Carbon::now()->startOfDay();
         $endDate = $this->end_date->startOfDay();
         $daysDiff = (int) $now->diffInDays($endDate, false);
-        
+
         if ($daysDiff < 0) {
             return 'expired';
         }
@@ -57,11 +57,18 @@ class Subscription extends Model
         if ($daysDiff <= 3) {
             return 'expires_soon';
         }
+
         return 'active';
     }
 
     public function getTotalPaidAttribute()
     {
         return $this->payments->sum('amount');
+    }
+
+    public function scopeThisMonth(Builder $query): Builder
+    {
+        return $query->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year);
     }
 }

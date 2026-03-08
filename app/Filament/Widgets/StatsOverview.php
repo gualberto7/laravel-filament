@@ -6,6 +6,7 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use App\Models\CheckIn;
 use App\Models\Client;
+use App\Models\Subscription;
 
 class StatsOverview extends BaseWidget
 {
@@ -22,9 +23,9 @@ class StatsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-o-user-group')
                 ->color('primary'),
 
-            Stat::make('Nuevos clientes', Client::new()->count())
-                ->description('Nuevos clientes este mes')
-                ->descriptionIcon('heroicon-o-user-plus')
+            Stat::make('Suscripciones este mes', Subscription::thisMonth()->count())
+                ->description('Nuevas suscripciones en '.now()->translatedFormat('F'))
+                ->descriptionIcon('heroicon-o-clipboard-document-check')
                 ->color('success'),
         ];
     }
