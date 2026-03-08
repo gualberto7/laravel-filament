@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Subscriptions;
 
 use Carbon\Carbon;
+use App\Enums\PaymentMethod;
 use App\Models\Client;
 use App\Models\Membership;
 use App\Models\Subscription;
@@ -155,11 +156,7 @@ class SubscriptionResource extends Resource
                                     ->live()
                                     ->required(),
                                 Select::make('method')
-                                    ->options([
-                                        'cash' => 'Efectivo',
-                                        'qr' => 'QR',
-                                        'card' => 'Tarjeta',
-                                    ])
+                                    ->options(PaymentMethod::class)
                                     ->required(),
                             ])
                             ->cloneable()
@@ -248,14 +245,17 @@ class SubscriptionResource extends Resource
                             ->url(fn (Subscription $record): string => SubscriptionResource::getUrl('edit', ['record' => $record])),
                     ])
                     ->schema([
-                        TextEntry::make('clients.name'),
-                        TextEntry::make('membership.name'),
+                        TextEntry::make('clients.name')
+                            ->label('Cliente'),
+                        TextEntry::make('membership.name')
+                            ->label('Membresía'),
                         TextEntry::make('total_paid')
                             ->label('Total Pagado')
                             ->prefix('Bs. ')
                             ->color(fn (string $state, $record): string => $state >= $record->price ? 'success' : 'warning')
                             ->hint(fn (string $state, $record): string => $state >= $record->price ? 'Pago Completo' : 'Pago Pendiente'),
                         TextEntry::make('status')
+                            ->label('Estado')
                             ->badge()
                             ->color(fn (string $state): string => match ($state) {
                                 'active' => 'success',
@@ -264,12 +264,17 @@ class SubscriptionResource extends Resource
                                 'expired' => 'gray',
                             }),
                         TextEntry::make('start_date')
+                            ->label('Fecha inicio')
                             ->dateTime('d-m-Y'),
                         TextEntry::make('end_date')
+                            ->label('Fecha fin')
                             ->dateTime('d-m-Y'),
-                        TextEntry::make('price'),
-                        TextEntry::make('created_by'),
-                        TextEntry::make('updated_by'),
+                        TextEntry::make('price')
+                            ->label('Precio'),
+                        TextEntry::make('created_by')
+                            ->label('Registrado por'),
+                        TextEntry::make('updated_by')
+                            ->label('Actualizado por'),
                     ])
                     ->columns(3)
                     ->columnSpanFull(),
@@ -278,37 +283,42 @@ class SubscriptionResource extends Resource
                     ->headerActions([
                         Action::make('addPayment')
                             ->label('Agregar Pago')
+                            ->disabled(fn (Subscription $record): bool => $record->total_paid >= $record->price)
                             ->schema([
                                 TextInput::make('amount')
+                                    ->label('monto')
                                     ->prefix('Bs.')
                                     ->required(),
                                 Select::make('method')
-                                    ->options([
-                                        'cash' => 'Efectivo',
-                                        'qr' => 'QR',
-                                        'card' => 'Tarjeta',
-                                    ])
+                                    ->label('Metodo de pago')
+                                    ->options(PaymentMethod::class)
                                     ->required(),
                             ])
-                            ->action(function (array $data, Subscription $record) {
+                            ->action(function (array $data, Subscription $record, $livewire) {
                                 $record->payments()->create($data);
                                 Notification::make()
                                     ->title('Pago agregado correctamente')
                                     ->success()
                                     ->send();
+                                $livewire->dispatch('$refresh');
                             })
                             ->modalWidth('md'),
                     ])
                     ->schema([
                         RepeatableEntry::make('payments')
-                            ->label('')
+                            ->label('Pagos de la suscripción')
                             ->columns(4)
                             ->schema([
-                                TextEntry::make('amount'),
-                                TextEntry::make('method'),
+                                TextEntry::make('amount')
+                                    ->label('Monto'),
+                                TextEntry::make('method')
+                                    ->label('Método de pago')
+                                    ->formatStateUsing(fn (string $state) => PaymentMethod::from($state)->getLabel()),
                                 TextEntry::make('created_at')
+                                    ->label('Fecha y hora')
                                     ->dateTime('d-m-Y H:i'),
-                                TextEntry::make('created_by'),
+                                TextEntry::make('created_by')
+                                    ->label('Registrado por'),
                             ]),
                     ])
                     ->columnSpanFull(),
