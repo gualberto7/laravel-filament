@@ -300,7 +300,7 @@ class SubscriptionResource extends Resource
                                     ->title('Pago agregado correctamente')
                                     ->success()
                                     ->send();
-                                $livewire->dispatch('$refresh');
+                                $livewire->dispatch('payment-created');
                             })
                             ->modalWidth('md'),
                     ])
