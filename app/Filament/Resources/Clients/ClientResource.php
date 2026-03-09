@@ -11,7 +11,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\RepeatableEntry;
-use Filament\Schemas\Components\Livewire;
 use App\Filament\Resources\CheckIns\CheckInResource;
 use App\Filament\Resources\Subscriptions\SubscriptionResource;
 use App\Filament\Resources\Clients\Pages\ListClients;
@@ -26,11 +25,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
-use App\Livewire\CheckIn\Index;
 use App\Filament\Traits\HasPagination;
 use Filament\Actions\Action;
 use Filament\Schemas\Components\Actions as SchemaActions;
 use App\Models\Subscription;
+use Filament\Infolists\Components\RepeatableEntry\TableColumn;
 
 class ClientResource extends Resource
 {
@@ -228,7 +227,23 @@ class ClientResource extends Resource
                             ->url(fn (Client $record): string => ClientResource::getUrl('check-ins', ['record' => $record])),
                     ])
                     ->schema([
-                        Livewire::make(Index::class),
+                        RepeatableEntry::make('checkins')
+                            ->label('Últimos check-ins del cliente')
+                            ->state(fn (Client $record) => $record->checkins->sortByDesc('created_at')->take(5))
+                            ->table([
+                                TableColumn::make('Fecha'),
+                                TableColumn::make('Hora'),
+                                TableColumn::make('Casillero'),
+                                TableColumn::make('Registrado por'),
+                            ])
+                            ->schema([
+                                TextEntry::make('created_at')
+                                    ->dateTime('d-m-Y'),
+                                TextEntry::make('updated_at')
+                                    ->dateTime('H:i'),
+                                TextEntry::make('locker_number'),
+                                TextEntry::make('created_by'),
+                            ]),
                     ])
                     ->columnSpanFull(),
             ]);
