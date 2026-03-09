@@ -10,7 +10,6 @@ use Filament\Actions\EditAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use App\Filament\Resources\CheckIns\Pages\ListCheckIns;
-use App\Filament\Resources\CheckIns\Pages\CreateCheckIn;
 use App\Filament\Resources\CheckIns\Pages\EditCheckIn;
 use App\Models\CheckIn;
 use Filament\Resources\Resource;
@@ -84,12 +83,12 @@ class CheckInResource extends Resource
             ])
             ->recordActions([
                 EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
+        // ->toolbarActions([
+        //     BulkActionGroup::make([
+        //         DeleteBulkAction::make(),
+        //     ]),
+        // ]);
     }
 
     public static function getRelations(): array
@@ -103,7 +102,6 @@ class CheckInResource extends Resource
     {
         return [
             'index' => ListCheckIns::route('/'),
-            'create' => CreateCheckIn::route('/create'),
             'edit' => EditCheckIn::route('/{record}/edit'),
         ];
     }
