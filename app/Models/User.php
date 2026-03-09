@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Traits\HasPreferences;
 use Filament\Models\Contracts\FilamentUser;
+use Spatie\Permission\Models\Role;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -105,5 +106,26 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return true; // $this->hasRole('admin');
+    }
+
+    public function availableRoles(): \Illuminate\Database\Eloquent\Collection
+    {
+        $user = auth()->user();
+
+        if (! $user) {
+            return Role::query()->whereRaw('1 = 0')->get();
+        }
+
+        if ($user->hasRole('super_admin')) {
+            return Role::all();
+        }
+
+        if ($user->hasRole('owner')) {
+            return Role::query()
+                ->whereNotIn('name', ['super_admin', 'owner'])
+                ->get();
+        }
+
+        return Role::query()->whereRaw('1 = 0')->get();
     }
 }
