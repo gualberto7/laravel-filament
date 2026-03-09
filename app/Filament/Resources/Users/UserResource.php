@@ -11,17 +11,11 @@ use Filament\Actions\DeleteBulkAction;
 use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
-use Filament\Forms;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
-use Spatie\Permission\Models\Role;
 use App\Filament\Traits\HasPagination;
 
 class UserResource extends Resource
@@ -31,9 +25,13 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationLabel = 'Usuarios';
-    protected static string | \UnitEnum | null $navigationGroup = 'Gestion';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Gestion';
+
     protected static ?int $navigationSort = 2;
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-user-group';
+
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
+
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Schema $schema): Schema
@@ -64,7 +62,9 @@ class UserResource extends Resource
                 Select::make('roles')
                     ->label('Rol')
                     ->relationship('roles', 'name')
-                    ->options(Role::all()->pluck('name', 'id'))
+                    ->options(fn () => auth()->user()->availableRoles()->mapWithKeys(
+                        fn ($role) => [$role->id => \App\Enums\RoleEnum::tryFrom($role->name)?->label() ?? $role->name]
+                    ))
                     ->required()
                     ->multiple(),
             ]);
