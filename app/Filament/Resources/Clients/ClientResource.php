@@ -29,6 +29,8 @@ use Illuminate\Validation\Rule;
 use App\Livewire\CheckIn\Index;
 use App\Filament\Traits\HasPagination;
 use Filament\Actions\Action;
+use Filament\Schemas\Components\Actions as SchemaActions;
+use App\Models\Subscription;
 
 class ClientResource extends Resource
 {
@@ -141,33 +143,41 @@ class ClientResource extends Resource
                 Section::make('Cliente')
                     ->description('Datos del cliente')
                     ->headerActions([
-                        \Filament\Actions\Action::make('edit')
+                        Action::make('edit')
                             ->label('Editar Cliente')
                             ->url(fn (Client $record): string => ClientResource::getUrl('edit', ['record' => $record])),
                     ])
                     ->schema([
-                        TextEntry::make('name'),
-                        TextEntry::make('card_id'),
-                        TextEntry::make('email'),
-                        TextEntry::make('phone'),
+                        TextEntry::make('name')
+                            ->label('Nombre'),
+                        TextEntry::make('card_id')
+                            ->label('Nro. de Carnet'),
+                        TextEntry::make('email')
+                            ->label('Correo'),
+                        TextEntry::make('phone')
+                            ->label('Celular'),
                         TextEntry::make('created_at')
+                            ->label('Creado en')
                             ->dateTime('d-m-Y H:i'),
                         TextEntry::make('updated_at')
+                            ->label('Actualizado en')
                             ->dateTime('d-m-Y H:i'),
-                        TextEntry::make('created_by'),
-                        TextEntry::make('updated_by'),
+                        TextEntry::make('created_by')
+                            ->label('Registrado por'),
+                        TextEntry::make('updated_by')
+                            ->label('Actualizado por'),
                     ])
                     ->columns(3)
                     ->columnSpanFull(),
 
                 Section::make('Suscripciones')
-                    ->description('Últimas 4 suscripciones del cliente')
+                    ->description('Últimas 2 suscripciones del cliente')
                     ->headerActions([
-                        \Filament\Actions\Action::make('ver_todas')
-                            ->label('Ver todas')
+                        Action::make('ver_todas')
+                            ->label('Historial de Subscripciones')
                             ->url(fn (Client $record): string => ClientResource::getUrl('subscriptions', ['record' => $record]))
                             ->color('gray'),
-                        \Filament\Actions\Action::make('create')
+                        Action::make('create')
                             ->label('Crear Suscripción')
                             ->url(fn (Client $record): string => SubscriptionResource::getUrl('create', ['client_id' => $record->id])),
                     ])
@@ -178,6 +188,7 @@ class ClientResource extends Resource
                             ->columns(2)
                             ->schema([
                                 TextEntry::make('status')
+                                    ->label('Estado')
                                     ->badge()
                                     ->color(fn (string $state): string => match ($state) {
                                         'active' => 'success',
@@ -188,11 +199,22 @@ class ClientResource extends Resource
                                 TextEntry::make('membership.name')
                                     ->label('Membresía'),
                                 TextEntry::make('start_date')
+                                    ->label('Fecha Inicio')
                                     ->dateTime('d-m-Y'),
                                 TextEntry::make('end_date')
+                                    ->label('Fecha Fin')
                                     ->dateTime('d-m-Y'),
                                 TextEntry::make('price')
+                                    ->label('Monto')
                                     ->prefix('Bs. '),
+                                SchemaActions::make([
+                                    Action::make('ver_subscription')
+                                        ->label('Ver detalle')
+                                        ->icon('heroicon-o-arrow-top-right-on-square')
+                                        ->url(fn (Subscription $record): string => SubscriptionResource::getUrl('view', ['record' => $record]))
+                                        ->color('gray')
+                                        ->size('sm'),
+                                ])->columnSpanFull(),
                             ])
                             ->grid(2),
                     ])
