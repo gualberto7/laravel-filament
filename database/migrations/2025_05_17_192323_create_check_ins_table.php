@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('updated_by');
             $table->foreignUuid('gym_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('client_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('subscription_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

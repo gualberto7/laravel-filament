@@ -25,6 +25,7 @@ class CheckInFactory extends Factory
             'locker_number' => $this->faker->word(),
             'gym_id' => $gym->id,
             'client_id' => $client->id,
+            'subscription_id' => null,
             'created_by' => 'Seeder',
             'updated_by' => 'Seeder',
         ];

@@ -45,19 +45,25 @@ class InfoModal extends Component
         $this->dispatch('open-modal', id: 'search-client');
     }
 
-    public function checkIn()
+    public function checkIn(): void
     {
-        $this->client->addCheckIn($this->key_number);
+        try {
+            $this->client->addCheckIn($this->key_number);
 
-        // After registering the check-in, you might want to close the modal
-        $this->dispatch('close-modal', id: 'search-client');
+            $this->dispatch('close-modal', id: 'search-client');
 
-        // Optionally, you can also show a success notification
-        Notification::make()
-            ->title(CheckInResource::getModelLabel().' registrado correctamente')
-            ->body('El '.CheckInResource::getModelLabel().' para '.$this->client->name.' ha sido registrado exitosamente.')
-            ->success()
-            ->send();
+            Notification::make()
+                ->title(CheckInResource::getModelLabel().' registrado correctamente')
+                ->body('El '.CheckInResource::getModelLabel().' para '.$this->client->name.' ha sido registrado exitosamente.')
+                ->success()
+                ->send();
+        } catch (\RuntimeException $e) {
+            Notification::make()
+                ->title('No se puede registrar el ingreso')
+                ->body($e->getMessage())
+                ->danger()
+                ->send();
+        }
     }
 
     public function render()

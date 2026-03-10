@@ -9,7 +9,7 @@ use App\Models\Traits\BelongsToGym;
 
 class Client extends Model
 {
-    use HasFactory, HasUuids, BelongsToGym;
+    use BelongsToGym, HasFactory, HasUuids;
 
     public function gym()
     {
@@ -31,17 +31,50 @@ class Client extends Model
         return $this->hasMany(CheckIn::class);
     }
 
-    public function addCheckIn($locker_number = null)
+    public function getActiveSubscription(): ?Subscription
     {
-        $checkIn = CheckIn::create([
+        return $this->subscriptions()
+            ->with('membership')
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->orderByDesc('end_date')
+            ->first();
+    }
+
+    public function checkInsCountForSubscription(Subscription $subscription): int
+    {
+        return $this->checkIns()
+            ->where('subscription_id', $subscription->id)
+            ->count();
+    }
+
+    public function addCheckIn($locker_number = null): CheckIn
+    {
+        $subscription = $this->getActiveSubscription();
+
+        if (! $subscription) {
+            throw new \RuntimeException('El cliente no tiene una suscripción activa.');
+        }
+
+        $membership = $subscription->membership;
+
+        if ($membership->max_checkins !== null) {
+            $used = $this->checkInsCountForSubscription($subscription);
+            if ($used >= $membership->max_checkins) {
+                throw new \RuntimeException(
+                    "El cliente ha agotado sus {$membership->max_checkins} ingresos disponibles para este período."
+                );
+            }
+        }
+
+        return CheckIn::create([
             'client_id' => $this->id,
             'gym_id' => auth()->user()->getCurrentGymId(),
+            'subscription_id' => $subscription->id,
             'locker_number' => $locker_number,
             'created_by' => auth()->user()->name,
             'updated_by' => auth()->user()->name,
         ]);
-
-        return $checkIn;
     }
 
     public function scopeActive($query)
