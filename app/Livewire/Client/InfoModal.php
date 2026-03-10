@@ -5,6 +5,7 @@ namespace App\Livewire\Client;
 use App\Models\Gym;
 use App\Models\Client;
 use Livewire\Component;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use App\Filament\Resources\CheckIns\CheckInResource;
 use Filament\Notifications\Notification;
@@ -64,6 +65,16 @@ class InfoModal extends Component
                 ->danger()
                 ->send();
         }
+    }
+
+    #[Computed]
+    public function checkInsUsed(): ?int
+    {
+        if (! $this->client || ! $this->subscription || ! $this->subscription->membership->max_checkins) {
+            return null;
+        }
+
+        return $this->client->checkInsCountForSubscription($this->subscription);
     }
 
     public function render()
