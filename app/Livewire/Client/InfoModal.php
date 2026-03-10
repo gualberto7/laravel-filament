@@ -5,6 +5,7 @@ namespace App\Livewire\Client;
 use App\Models\Gym;
 use App\Models\Client;
 use Livewire\Component;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use App\Filament\Resources\CheckIns\CheckInResource;
 use Filament\Notifications\Notification;
@@ -45,19 +46,35 @@ class InfoModal extends Component
         $this->dispatch('open-modal', id: 'search-client');
     }
 
-    public function checkIn()
+    public function checkIn(): void
     {
-        $this->client->addCheckIn($this->key_number);
+        try {
+            $this->client->addCheckIn($this->key_number);
 
-        // After registering the check-in, you might want to close the modal
-        $this->dispatch('close-modal', id: 'search-client');
+            $this->dispatch('close-modal', id: 'search-client');
 
-        // Optionally, you can also show a success notification
-        Notification::make()
-            ->title(CheckInResource::getModelLabel().' registrado correctamente')
-            ->body('El '.CheckInResource::getModelLabel().' para '.$this->client->name.' ha sido registrado exitosamente.')
-            ->success()
-            ->send();
+            Notification::make()
+                ->title(CheckInResource::getModelLabel().' registrado correctamente')
+                ->body('El '.CheckInResource::getModelLabel().' para '.$this->client->name.' ha sido registrado exitosamente.')
+                ->success()
+                ->send();
+        } catch (\RuntimeException $e) {
+            Notification::make()
+                ->title('No se puede registrar el ingreso')
+                ->body($e->getMessage())
+                ->danger()
+                ->send();
+        }
+    }
+
+    #[Computed]
+    public function checkInsUsed(): ?int
+    {
+        if (! $this->client || ! $this->subscription || ! $this->subscription->membership->max_checkins) {
+            return null;
+        }
+
+        return $this->client->checkInsCountForSubscription($this->subscription);
     }
 
     public function render()
