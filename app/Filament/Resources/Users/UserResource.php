@@ -73,6 +73,7 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return static::applyPagination($table)
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('email'),

@@ -42,10 +42,7 @@ class CheckInResource extends Resource
     public static function table(Table $table): Table
     {
         return static::applyPagination($table)
-            ->modifyQueryUsing(function (Builder $query) {
-                $query
-                    ->orderByDesc('created_at');
-            })
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('client.name')
                     ->label('Cliente')
