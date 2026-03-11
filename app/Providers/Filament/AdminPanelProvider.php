@@ -61,8 +61,9 @@ class AdminPanelProvider extends PanelProvider
             )
             ->navigationGroups([
                 'Gestion',
+                'Reportes',
                 'Configuración',
             ])
-            ->globalSearchKeyBindings(['command+k', 'ctrl+k']);;
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k']);
     }
 }
