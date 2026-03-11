@@ -85,6 +85,7 @@ class ClientResource extends Resource
     public static function table(Table $table): Table
     {
         return static::applyPagination($table)
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('name')
                     ->label('Nombre')

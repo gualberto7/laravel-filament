@@ -136,6 +136,7 @@ class MembershipResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('price', 'acs')
             ->columns([
                 TextColumn::make('name')
                     ->label('Nombre'),
