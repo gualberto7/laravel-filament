@@ -30,6 +30,12 @@
                     <span class="font-bold">Fecha Fin</span>
                     <span>{{ $subscription->end_date->format('d-m-Y') }}</span>
                 </div>
+                @if ($this->checkInsUsed !== null)
+                    <div class="flex flex-col">
+                        <span class="font-bold">Ingresos</span>
+                        <span>{{ $this->checkInsUsed }}/{{ $subscription->membership->max_checkins }}</span>
+                    </div>
+                @endif
 
                 @if($register_key)
                     <div class="flex flex-col">

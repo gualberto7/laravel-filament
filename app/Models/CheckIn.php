@@ -12,7 +12,7 @@ use Carbon\Carbon;
 class CheckIn extends Model
 {
     /** @use HasFactory<CheckInFactory> */
-    use HasFactory, HasUuids, BelongsToGym;
+    use BelongsToGym, HasFactory, HasUuids;
 
     public function client()
     {
@@ -22,6 +22,11 @@ class CheckIn extends Model
     public function gym()
     {
         return $this->belongsTo(Gym::class);
+    }
+
+    public function subscription()
+    {
+        return $this->belongsTo(Subscription::class);
     }
 
     public function scopeToday($query)

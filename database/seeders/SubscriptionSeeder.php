@@ -27,6 +27,7 @@ class SubscriptionSeeder extends Seeder
             $membership = $memberships->random();
             $startDate = Carbon::now()->subDays(rand(0, 30));
             $endDate = $startDate->copy()->addDays(rand(30, 365));
+            $methods = ['cash', 'card', 'qr'];
 
             $subscription = Subscription::factory()->create([
                 'membership_id' => $membership->id,
@@ -36,6 +37,16 @@ class SubscriptionSeeder extends Seeder
                 'updated_by' => 'Seeder',
                 'price' => $membership->price,
                 'gym_id' => $gym->id,
+            ]);
+
+            $random_key = array_rand($methods);
+
+            $subscription->payments()->create([
+                'amount' => $subscription->price,
+                'method' => $methods[$random_key],
+                'status' => 'paid',
+                'created_by' => 'Seeder',
+                'updated_by' => 'Seeder',
             ]);
 
             $subscription->clients()->attach($client);

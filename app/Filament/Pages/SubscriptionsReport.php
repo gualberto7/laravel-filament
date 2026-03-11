@@ -6,17 +6,19 @@ use App\Filament\Widgets\ClientsPerMonthChart;
 use App\Filament\Widgets\SubscriptionsByMembershipChart;
 use Filament\Pages\Page;
 
-class Reportes extends Page
+class SubscriptionsReport extends Page
 {
-    protected static ?string $navigationLabel = 'Reportes';
+    protected static ?string $navigationLabel = 'Subscripciones';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Gestion';
+    protected static string|\UnitEnum|null $navigationGroup = 'Reportes';
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-chart-bar';
 
-    protected static ?int $navigationSort = 10;
+    protected static ?int $navigationSort = 2;
 
-    protected string $view = 'filament.pages.reportes';
+    protected static ?string $title = 'Reportes de Subscripciones';
+
+    protected string $view = 'filament.pages.subscriptions-report';
 
     protected function getHeaderWidgets(): array
     {
