@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources\Clients\Pages;
 
+use App\Exports\ClientsExport;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Schemas\Components\Tabs\Tab;
 use App\Filament\Resources\Clients\ClientResource;
-use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ListClients extends ListRecords
 {
@@ -18,6 +20,19 @@ class ListClients extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('export')
+                ->label('Exportar a Excel')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('gray')
+                ->action(function () {
+                    $gymId = auth()->user()->getCurrentGymId();
+
+                    return Excel::download(
+                        new ClientsExport($gymId),
+                        'clientes-'.now()->format('Y-m-d').'.xlsx'
+                    );
+                })
+                ->visible(auth()->user()->hasRole('owner')),
             CreateAction::make(),
         ];
     }
