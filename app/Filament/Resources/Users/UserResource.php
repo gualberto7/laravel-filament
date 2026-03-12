@@ -6,8 +6,6 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
@@ -16,7 +14,10 @@ use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Forms\Components\Toggle;
 use App\Filament\Traits\HasPagination;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -47,11 +48,11 @@ class UserResource extends Resource
                     ->live()
                     ->required(),
                 TextInput::make('email')
-                    ->label('Email')
+                    ->label('Correo')
                     ->required()
                     ->email(),
                 TextInput::make('phone')
-                    ->label('Teléfono')
+                    ->label('Celular')
                     ->required(),
                 TextInput::make('password')
                     ->label('Contraseña')
@@ -67,6 +68,8 @@ class UserResource extends Resource
                     ))
                     ->required()
                     ->multiple(),
+                Toggle::make('is_active')
+                    ->label('Activo?'),
             ]);
     }
 
@@ -75,20 +78,21 @@ class UserResource extends Resource
         return static::applyPagination($table)
             ->defaultSort('created_at', 'desc')
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('email'),
-                TextColumn::make('roles.name'),
+                TextColumn::make('name')
+                    ->label('Nombre'),
+                TextColumn::make('email')
+                    ->label('Correo'),
+                TextColumn::make('roles.name')
+                    ->label('Roles'),
+                IconColumn::make('is_active')
+                    ->label('Estado')
+                    ->boolean(),
             ])
             ->filters([
                 //
             ])
             ->recordActions([
                 EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

@@ -11,8 +11,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Actions\ViewAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Schemas\Components\Section;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\TextEntry;
@@ -151,7 +149,7 @@ class MembershipResource extends Resource
                     ->color(fn (string $state): string => $state ? 'success' : 'gray')
                     ->formatStateUsing(fn (string $state): string => $state ? 'Promoción' : 'Normal'),
                 IconColumn::make('is_active')
-                    ->label('Activo?')
+                    ->label('Estado')
                     ->boolean(),
             ])
             ->defaultSort('price', 'asc')
@@ -161,11 +159,6 @@ class MembershipResource extends Resource
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
