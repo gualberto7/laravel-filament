@@ -47,7 +47,10 @@ class UserResource extends Resource
                     ->label('Usuario')
                     ->unique()
                     ->live()
-                    ->required(),
+                    ->required()
+                    ->validationMessages([
+                        'unique' => 'El nombre de usuario ya está en uso.',
+                    ]),
                 TextInput::make('email')
                     ->label('Correo')
                     ->required()
