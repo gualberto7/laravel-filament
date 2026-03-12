@@ -7,7 +7,7 @@ describe('Memberships', function () {
     beforeEach(function () {
         $this->user = User::factory()->create();
         $this->gym = Gym::factory()->create(['user_id' => $this->user->id]);
-        setupUser($this->user, $this->gym, 'super_admin');
+        setupUser($this->user, $this->gym, 'owner');
         test()->actingAs($this->user);
     });
 
@@ -26,9 +26,9 @@ describe('Memberships', function () {
         $page = visit('/admin/memberships');
         $page->assertSee('Nombre')
             ->assertSee('Precio Bs.')
-            ->assertSee('Duración días')
+            ->assertSee('Tiempo (días)')
             ->assertSee('Tipo')
-            ->assertSee('Activo?');
+            ->assertSee('Estado');
     });
 
     test('should redirect to Membreships create page', function () {
@@ -63,7 +63,7 @@ describe('Memberships', function () {
             ->type('@price-input', '300')
             ->type('@duration-input', '30')
             ->press('Activo?')
-            ->press('Promo?')
+            ->press('Es promoción?')
             ->type('@promo_start_date-input', now()->format('Y-d-m'))
             ->type('@promo_end_date-input', now()->addDays(30)->format('Y-d-m'))
             ->type('@max_clients-input', '2')
