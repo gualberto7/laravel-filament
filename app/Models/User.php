@@ -105,7 +105,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return true; // $this->hasRole('admin');
+        return (bool) $this->is_active;
     }
 
     public function availableRoles(): \Illuminate\Database\Eloquent\Collection

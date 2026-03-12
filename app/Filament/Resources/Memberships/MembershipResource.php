@@ -4,15 +4,13 @@ namespace App\Filament\Resources\Memberships;
 
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Checkbox;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Actions\ViewAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\TextEntry;
@@ -46,12 +44,14 @@ class MembershipResource extends Resource
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Nombre')
                     ->required()
                     ->maxLength(255)
                     ->extraInputAttributes([
                         'data-test' => 'name-input',
                     ]),
                 TextInput::make('price')
+                    ->label('Precio')
                     ->prefix('Bs.')
                     ->numeric()
                     ->required()
@@ -59,16 +59,23 @@ class MembershipResource extends Resource
                         'data-test' => 'price-input',
                     ]),
                 TextInput::make('duration')
+                    ->label('Tiempo (días)')
                     ->prefix('Días')
                     ->required()
                     ->numeric()
                     ->extraInputAttributes([
                         'data-test' => 'duration-input',
                     ]),
-                Checkbox::make('active')
+                Toggle::make('active')
                     ->label('Activo?')
+                    ->inline(false)
+                    ->default(true),
+                TextInput::make('max_checkins')
+                    ->label('Máximo checkins (opcional)')
+                    ->numeric()
+                    ->hint('Cantidad de ingresos al gimnasio')
                     ->extraInputAttributes([
-                        'data-test' => 'active-input',
+                        'data-test' => 'max_checkins-input',
                     ]),
                 TextInput::make('max_installments')
                     ->label('Paga en cuotas')
@@ -89,40 +96,27 @@ class MembershipResource extends Resource
                     ->extraInputAttributes([
                         'data-test' => 'max_installments-input',
                     ]),
-                Checkbox::make('has_max_checkins')
-                    ->label('Maximo de checkins?')
+
+                Toggle::make('is_promo')
+                    ->label('Es promoción?')
                     ->live()
-                    ->extraInputAttributes([
-                        'data-test' => 'has_max_checkins-input',
-                    ]),
-                TextInput::make('max_checkins')
-                    ->label('Máx. checkins')
-                    ->numeric()
-                    ->required()
-                    ->visible(fn (Get $get): bool => $get('has_max_checkins'))
-                    ->extraInputAttributes([
-                        'data-test' => 'max_checkins-input',
-                    ]),
-                Checkbox::make('is_promo')
-                    ->label('Promo?')
-                    ->live()
-                    ->extraInputAttributes([
-                        'data-test' => 'is_promo-input',
-                    ]),
+                    ->inline(false),
                 DatePicker::make('promo_start_date')
-                    ->label('Fecha de inicio de promo')
+                    ->label('Fecha Inicio')
                     ->visible(fn (Get $get): bool => $get('is_promo'))
+                    ->required()
                     ->extraInputAttributes([
                         'data-test' => 'promo_start_date-input',
                     ]),
                 DatePicker::make('promo_end_date')
-                    ->label('Fecha de fin de promo')
+                    ->label('Fecha Fin')
                     ->visible(fn (Get $get): bool => $get('is_promo'))
+                    ->required()
                     ->extraInputAttributes([
                         'data-test' => 'promo_end_date-input',
                     ]),
                 TextInput::make('max_clients')
-                    ->label('Máx. clientes')
+                    ->label('Máximo de clientes')
                     ->default(1)
                     ->numeric()
                     ->required()
@@ -144,14 +138,14 @@ class MembershipResource extends Resource
                     ->label('Precio Bs.')
                     ->sortable(),
                 TextColumn::make('duration')
-                    ->label('Duración días'),
+                    ->label('Tiempo (días)'),
                 TextColumn::make('is_promo')
                     ->label('Tipo')
                     ->badge()
                     ->color(fn (string $state): string => $state ? 'success' : 'gray')
                     ->formatStateUsing(fn (string $state): string => $state ? 'Promoción' : 'Normal'),
                 IconColumn::make('is_active')
-                    ->label('Activo?')
+                    ->label('Estado')
                     ->boolean(),
             ])
             ->defaultSort('price', 'asc')
@@ -161,11 +155,6 @@ class MembershipResource extends Resource
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
@@ -181,7 +170,8 @@ class MembershipResource extends Resource
                             ->url(fn (Membership $record): string => MembershipResource::getUrl('edit', ['record' => $record])),
                     ])
                     ->schema([
-                        TextEntry::make('name'),
+                        TextEntry::make('name')
+                            ->label('Nombre'),
                         TextEntry::make('is_promo')
                             ->label('Tipo')
                             ->badge()
@@ -196,31 +186,35 @@ class MembershipResource extends Resource
                             ->label('Precio Bs.')
                             ->prefix('Bs.'),
                         TextEntry::make('promo_start_date')
-                            ->label('Fecha de inicio de promo')
+                            ->label('Fecha Inicio')
                             ->dateTime('d-m-Y')
                             ->visible(function (Model $record): bool {
                                 return $record->is_promo && $record->promo_start_date;
                             }),
                         TextEntry::make('promo_end_date')
-                            ->label('Fecha de fin de promo')
+                            ->label('Fecha Fin')
                             ->dateTime('d-m-Y')
                             ->visible(function (Model $record): bool {
                                 return $record->is_promo && $record->promo_end_date;
                             }),
                         TextEntry::make('duration')
-                            ->label('Duración días'),
+                            ->label('Duración (días)'),
                         TextEntry::make('max_installments')
                             ->label('Paga en cuotas'),
                         TextEntry::make('max_checkins')
-                            ->label('Máximo de entradas'),
+                            ->label('Máximo de check-ins'),
                         TextEntry::make('max_clients')
                             ->label('Máximo de clientes'),
                         TextEntry::make('created_at')
-                            ->label('Fecha de creación')
+                            ->label('Creado en')
                             ->dateTime('d-m-Y H:i'),
                         TextEntry::make('updated_at')
-                            ->label('Fecha de actualización')
+                            ->label('Actualizado en')
                             ->dateTime('d-m-Y H:i'),
+                        TextEntry::make('created_by')
+                            ->label('Creado por'),
+                        TextEntry::make('updated_by')
+                            ->label('Actualizado por'),
                     ])
                     ->columns(3)
                     ->columnSpanFull(),
