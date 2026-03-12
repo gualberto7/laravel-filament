@@ -18,6 +18,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Forms\Components\Toggle;
 use App\Filament\Traits\HasPagination;
 use Illuminate\Support\Facades\Hash;
+use Filament\Actions\DeleteAction;
 
 class UserResource extends Resource
 {
@@ -83,7 +84,8 @@ class UserResource extends Resource
                 TextColumn::make('email')
                     ->label('Correo'),
                 TextColumn::make('roles.name')
-                    ->label('Roles'),
+                    ->label('Roles')
+                    ->formatStateUsing(fn (string $state) => \App\Enums\RoleEnum::tryFrom($state)?->label() ?? $state),
                 IconColumn::make('is_active')
                     ->label('Estado')
                     ->boolean(),
@@ -93,6 +95,7 @@ class UserResource extends Resource
             ])
             ->recordActions([
                 EditAction::make(),
+                DeleteAction::make(),
             ]);
     }
 
