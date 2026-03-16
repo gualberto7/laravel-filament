@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\SubscriptionStatus;
 use App\Models\Gym;
 use App\Models\Membership;
 use App\Models\Subscription;
@@ -65,24 +66,24 @@ describe('Subscription status attribute', function () {
     it('returns active for subscriptions ending in more than 3 days', function () {
         $subscription = Subscription::factory()->make(['end_date' => now()->addDays(10)]);
 
-        expect($subscription->status)->toBe('active');
+        expect($subscription->status)->toBe(SubscriptionStatus::Active);
     });
 
     it('returns expires_soon for subscriptions ending in 1 to 3 days', function () {
         $subscription = Subscription::factory()->make(['end_date' => now()->addDays(2)]);
 
-        expect($subscription->status)->toBe('expires_soon');
+        expect($subscription->status)->toBe(SubscriptionStatus::ExpiresSoon);
     });
 
     it('returns expires_today for subscriptions ending today', function () {
         $subscription = Subscription::factory()->make(['end_date' => now()]);
 
-        expect($subscription->status)->toBe('expires_today');
+        expect($subscription->status)->toBe(SubscriptionStatus::ExpiresToday);
     });
 
     it('returns expired for subscriptions ending yesterday', function () {
         $subscription = Subscription::factory()->make(['end_date' => now()->subDay()]);
 
-        expect($subscription->status)->toBe('expired');
+        expect($subscription->status)->toBe(SubscriptionStatus::Expired);
     });
 });
