@@ -179,13 +179,7 @@ class SubscriptionResource extends Resource
                 TextColumn::make('end_date')
                     ->dateTime('d-m-Y'),
                 TextColumn::make('status')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'active' => 'success',
-                        'expires_soon' => 'warning',
-                        'expires_today' => 'danger',
-                        'expired' => 'gray',
-                    }),
+                    ->badge(),
             ])
             ->filters([
                 SelectFilter::make('membership.name')
@@ -256,13 +250,7 @@ class SubscriptionResource extends Resource
                             ->hint(fn (string $state, $record): string => $state >= $record->price ? 'Pago Completo' : 'Pago Pendiente'),
                         TextEntry::make('status')
                             ->label('Estado')
-                            ->badge()
-                            ->color(fn (string $state): string => match ($state) {
-                                'active' => 'success',
-                                'expires_soon' => 'warning',
-                                'expires_today' => 'danger',
-                                'expired' => 'gray',
-                            }),
+                            ->badge(),
                         TextEntry::make('start_date')
                             ->label('Fecha inicio')
                             ->dateTime('d-m-Y'),

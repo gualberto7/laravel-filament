@@ -25,6 +25,7 @@ class CustomLogin extends Login
                     ->required()
                     ->password()
                     ->revealable()
+                    ->autocomplete(false)
                     ->extraInputAttributes([
                         'data-test' => 'password-input',
                     ]),

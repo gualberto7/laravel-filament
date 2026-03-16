@@ -29,6 +29,7 @@ use App\Filament\Traits\HasPagination;
 use Filament\Actions\Action;
 use Filament\Schemas\Components\Actions as SchemaActions;
 use App\Models\Subscription;
+use App\Enums\SubscriptionStatus;
 use Filament\Infolists\Components\RepeatableEntry\TableColumn;
 
 class ClientResource extends Resource
@@ -98,14 +99,7 @@ class ClientResource extends Resource
                 TextColumn::make('latestSubscription.status')
                     ->label('Estado')
                     ->badge()
-                    ->state(fn (Client $record): ?string => $record->latestSubscription->first()?->status)
-                    ->color(fn (?string $state): string => match ($state) {
-                        'active' => 'success',
-                        'expires_soon' => 'warning',
-                        'expires_today' => 'danger',
-                        'expired', 'inactive' => 'gray',
-                        default => 'gray',
-                    }),
+                    ->state(fn (Client $record): ?SubscriptionStatus => $record->latestSubscription->first()?->status),
                 TextColumn::make('phone')
                     ->label('Celular'),
             ])
@@ -116,12 +110,12 @@ class ClientResource extends Resource
                 ViewAction::make(),
                 Action::make('checkin')
                     ->dispatch('addCheckin', fn ($record) => [$record->id]),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
+        // ->toolbarActions([
+        //     BulkActionGroup::make([
+        //         DeleteBulkAction::make(),
+        //     ]),
+        // ]);
     }
 
     public static function getEloquentQuery(): Builder
@@ -189,13 +183,7 @@ class ClientResource extends Resource
                             ->schema([
                                 TextEntry::make('status')
                                     ->label('Estado')
-                                    ->badge()
-                                    ->color(fn (string $state): string => match ($state) {
-                                        'active' => 'success',
-                                        'expires_soon' => 'warning',
-                                        'expires_today' => 'danger',
-                                        'expired' => 'gray',
-                                    }),
+                                    ->badge(),
                                 TextEntry::make('membership.name')
                                     ->label('Membresía'),
                                 TextEntry::make('start_date')
