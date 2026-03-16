@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Memberships;
 
+use Closure;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Get;
@@ -70,18 +71,11 @@ class MembershipResource extends Resource
                     ->label('Activo?')
                     ->inline(false)
                     ->default(true),
-                TextInput::make('max_checkins')
-                    ->label('Máximo checkins (opcional)')
-                    ->numeric()
-                    ->hint('Cantidad de ingresos al gimnasio')
-                    ->extraInputAttributes([
-                        'data-test' => 'max_checkins-input',
-                    ]),
                 TextInput::make('max_installments')
                     ->label('Paga en cuotas')
                     ->hint(function ($state, Get $get): string {
                         $price = $get('price');
-                        if ($price) {
+                        if ($price && $state > 0) {
                             $installments = $price / $state;
 
                             return 'Paga en '.$state.' cuotas de '.$installments.' Bs.';
@@ -93,10 +87,24 @@ class MembershipResource extends Resource
                     ->required()
                     ->numeric()
                     ->default(1)
+                    ->minValue(1)
+                    ->rules([
+                        fn (): Closure => function (string $attribute, $value, Closure $fail) {
+                            if ($value < 0) {
+                                return $fail('La cantidad de coutas debe ser al menos 1');
+                            }
+                        },
+                    ])
                     ->extraInputAttributes([
                         'data-test' => 'max_installments-input',
                     ]),
-
+                TextInput::make('max_checkins')
+                    ->label('Máximo checkins (opcional)')
+                    ->numeric()
+                    ->hint('Cantidad de ingresos al gimnasio')
+                    ->extraInputAttributes([
+                        'data-test' => 'max_checkins-input',
+                    ]),
                 Toggle::make('is_promo')
                     ->label('Es promoción?')
                     ->live()
