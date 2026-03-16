@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use App\Enums\SubscriptionStatus;
 use App\Models\Traits\BelongsToGym;
 
 class Subscription extends Model
@@ -42,23 +43,23 @@ class Subscription extends Model
         return $this->hasMany(SubscriptionPayment::class);
     }
 
-    public function getStatusAttribute()
+    public function getStatusAttribute(): SubscriptionStatus
     {
         $now = Carbon::now()->startOfDay();
         $endDate = $this->end_date->startOfDay();
         $daysDiff = (int) $now->diffInDays($endDate, false);
 
         if ($daysDiff < 0) {
-            return 'expired';
+            return SubscriptionStatus::Expired;
         }
         if ($daysDiff === 0) {
-            return 'expires_today';
+            return SubscriptionStatus::ExpiresToday;
         }
         if ($daysDiff <= 3) {
-            return 'expires_soon';
+            return SubscriptionStatus::ExpiresSoon;
         }
 
-        return 'active';
+        return SubscriptionStatus::Active;
     }
 
     public function getTotalPaidAttribute()

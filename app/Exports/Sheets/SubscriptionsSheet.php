@@ -2,6 +2,7 @@
 
 namespace App\Exports\Sheets;
 
+use App\Enums\SubscriptionStatus;
 use App\Models\Client;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -20,7 +21,7 @@ class SubscriptionsSheet implements FromCollection, WithHeadings, WithMapping, W
 
     public function collection(): Collection
     {
-        $activeStatuses = ['active', 'expires_soon', 'expires_today'];
+        $activeStatuses = [SubscriptionStatus::Active, SubscriptionStatus::ExpiresSoon, SubscriptionStatus::ExpiresToday];
 
         $clients = Client::query()
             ->where('gym_id', $this->gymId)
@@ -59,7 +60,7 @@ class SubscriptionsSheet implements FromCollection, WithHeadings, WithMapping, W
             $subscription->membership->name ?? '-',
             $subscription->start_date->format('Y-m-d'),
             $subscription->end_date->format('Y-m-d'),
-            $subscription->status,
+            $subscription->status->getLabel(),
             $subscription->membership->price ?? 0,
         ];
     }

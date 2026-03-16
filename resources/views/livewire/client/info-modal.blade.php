@@ -13,8 +13,8 @@
                 <div class="flex flex-col">
                     <span class="font-bold">Estado</span>
                     <div>
-                        <x-filament::badge color="{{ $subscription->status == 'active' ? 'success' : 'danger' }}">
-                            {{ $subscription->status }}
+                        <x-filament::badge color="{{ $subscription->status->getColor() }}">
+                            {{ $subscription->status->getLabel() }}
                         </x-filament::badge>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
         @endif
         <x-slot name="footerActions">
             @if ($subscription)
-                <x-filament::button wire:click="checkIn" disabled="{{ $subscription->status != 'active' }}">
+                <x-filament::button wire:click="checkIn" disabled="{{ $subscription->status !== \App\Enums\SubscriptionStatus::Active }}">
                     Check In
                 </x-filament::button>
             @endif

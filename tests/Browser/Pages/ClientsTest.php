@@ -44,7 +44,7 @@ describe('Clients', function () {
         $page = visit('/admin/clients');
         $page->assertSee($client->name)
             ->assertSee($membership->name)
-            ->assertSee($subscription->status)
+            ->assertSee($subscription->status->getLabel())
             ->assertSee($client->phone);
     });
 

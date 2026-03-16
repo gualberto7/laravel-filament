@@ -45,7 +45,6 @@ describe('Memberships', function () {
         $page->type('@name-input', 'Mensual')
             ->type('@price-input', '200')
             ->type('@duration-input', '30')
-            ->press('Activo?')
             ->click('@create-membership-button')
             ->assertSee('Membresía creado');
 
@@ -62,10 +61,9 @@ describe('Memberships', function () {
         $page->type('@name-input', 'Promo 2x1')
             ->type('@price-input', '300')
             ->type('@duration-input', '30')
-            ->press('Activo?')
             ->press('Es promoción?')
-            ->type('@promo_start_date-input', now()->format('Y-d-m'))
-            ->type('@promo_end_date-input', now()->addDays(30)->format('Y-d-m'))
+            ->type('@promo_start_date-input', now()->format('Y-m-d'))
+            ->type('@promo_end_date-input', now()->addDays(7)->format('Y-m-d'))
             ->type('@max_clients-input', '2')
             ->click('@create-membership-button')
             ->assertSee('Membresía creado');

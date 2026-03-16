@@ -14,7 +14,7 @@ class StatsOverview extends BaseWidget
     {
         return [
             Stat::make('Actividad', CheckIn::today()->count())
-                ->description('Ingresos al Gimnasio hoy')
+                ->description('Check-ins al Gimnasio hoy')
                 ->descriptionIcon('heroicon-o-check-circle')
                 ->color('success'),
 
