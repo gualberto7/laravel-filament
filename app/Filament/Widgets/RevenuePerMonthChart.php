@@ -10,6 +10,8 @@ class RevenuePerMonthChart extends ChartWidget
 {
     protected ?string $heading = 'Ingresos por mes';
 
+    protected ?string $pollingInterval = null;
+
     protected static ?int $sort = 1;
 
     protected function getData(): array
