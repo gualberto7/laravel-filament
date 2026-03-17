@@ -33,10 +33,12 @@ class Client extends Model
 
     public function getActiveSubscription(): ?Subscription
     {
+        $today = today();
+
         return $this->subscriptions()
             ->with('membership')
-            ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())
+            ->where('start_date', '<=', $today)
+            ->where('end_date', '>=', $today)
             ->orderByDesc('end_date')
             ->first();
     }
@@ -80,14 +82,14 @@ class Client extends Model
     public function scopeActive($query)
     {
         return $query->whereHas('subscriptions', function ($q) {
-            $q->where('end_date', '>=', now());
+            $q->where('end_date', '>=', today());
         });
     }
 
     public function scopeInactive($query)
     {
         return $query->whereDoesntHave('subscriptions', function ($q) {
-            $q->where('end_date', '>=', now());
+            $q->where('end_date', '>=', today());
         });
     }
 

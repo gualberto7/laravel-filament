@@ -58,7 +58,7 @@
         @endif
         <x-slot name="footerActions">
             @if ($subscription)
-                <x-filament::button wire:click="checkIn" disabled="{{ $subscription->status !== \App\Enums\SubscriptionStatus::Active }}">
+                <x-filament::button wire:click="checkIn" disabled="{{ $subscription->status === \App\Enums\SubscriptionStatus::Expired || $subscription->status === \App\Enums\SubscriptionStatus::Inactive }}">
                     Check In
                 </x-filament::button>
             @endif
