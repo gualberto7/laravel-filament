@@ -32,8 +32,8 @@
                 </div>
                 @if ($this->checkInsUsed !== null)
                     <div class="flex flex-col">
-                        <span class="font-bold">Ingresos</span>
-                        <span>{{ $this->checkInsUsed }}/{{ $subscription->membership->max_checkins }}</span>
+                        <span class="font-bold">Check-ins</span>
+                        <span>{{ $this->checkInsUsed }} / {{ $subscription->membership->max_checkins }}</span>
                     </div>
                 @endif
 
@@ -60,6 +60,9 @@
             @if ($subscription)
                 <x-filament::button wire:click="checkIn" disabled="{{ $subscription->status === \App\Enums\SubscriptionStatus::Expired || $subscription->status === \App\Enums\SubscriptionStatus::Inactive }}">
                     Check In
+                </x-filament::button>
+                <x-filament::button color="gray" tag="a" href="{{ route('filament.admin.resources.subscriptions.view', $subscription) }}">
+                    Ver suscripción
                 </x-filament::button>
             @endif
         </x-slot>
