@@ -12,6 +12,7 @@ use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use App\Livewire\Account\Settings as AccountSettingsLivewire;
 use App\Livewire\Gym\Settings as SettingsLivewire;
 
 class Settings extends Page implements HasForms, HasInfolists
@@ -51,6 +52,12 @@ class Settings extends Page implements HasForms, HasInfolists
                         Livewire::make(SettingsLivewire::class, [
                             'currentGym' => $this->currentGym,
                         ]),
+                    ]),
+                Section::make('Cuenta')
+                    ->description('Configuración de tu cuenta')
+                    ->aside()
+                    ->schema([
+                        Livewire::make(AccountSettingsLivewire::class),
                     ]),
             ]);
     }
