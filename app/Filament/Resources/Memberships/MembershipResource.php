@@ -14,6 +14,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Filament\Infolists\Components\TextEntry;
 use App\Filament\Resources\Memberships\Pages\ListMemberships;
 use App\Filament\Resources\Memberships\Pages\CreateMembership;
@@ -176,6 +177,10 @@ class MembershipResource extends Resource
                         Action::make('edit')
                             ->label('Editar Membresía')
                             ->url(fn (Membership $record): string => MembershipResource::getUrl('edit', ['record' => $record])),
+                        DeleteAction::make()
+                            ->label('Eliminar')
+                            ->visible(auth()->user()->hasRole('owner'))
+                            ->successRedirectUrl(MembershipResource::getUrl('index')),
                     ])
                     ->schema([
                         TextEntry::make('name')
