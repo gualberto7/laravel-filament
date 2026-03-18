@@ -5,7 +5,7 @@
         </x-slot>
 
         <x-slot name="description">
-            Aquí podrás ver el estado de tus clientes, suscripciones, membresías, etc.
+            {{ now()->isoFormat('dddd, D [de] MMMM [de] YYYY') }}
         </x-slot>
 
         <x-slot name="afterHeader">
