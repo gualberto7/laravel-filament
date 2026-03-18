@@ -38,7 +38,10 @@ class Settings extends Component implements HasForms
                     ->revealable()
                     ->required()
                     ->rule(Password::default())
-                    ->same('password_confirmation'),
+                    ->same('password_confirmation')
+                    ->validationMessages([
+                        'same' => 'Las contraseñas no coinciden.',
+                    ]),
                 TextInput::make('password_confirmation')
                     ->label('Confirmar nueva contraseña')
                     ->password()
