@@ -14,7 +14,7 @@
             </x-filament::button>
         </x-slot>
 
-        <div class="w-1/2 h-full mx-auto flex flex-col">
+        <div class="w-full md:w-1/2 h-full mx-auto flex flex-col">
             <livewire:client.search :current-gym="$currentGym" />
         </div>
     </x-filament::section>
