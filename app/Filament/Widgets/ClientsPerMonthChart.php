@@ -10,6 +10,8 @@ class ClientsPerMonthChart extends ChartWidget
 {
     protected ?string $heading = 'Suscripciones registradas por mes';
 
+    protected ?string $pollingInterval = null;
+
     protected static ?int $sort = 2;
 
     protected function getData(): array

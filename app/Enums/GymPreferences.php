@@ -5,7 +5,7 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasLabel;
 use Filament\Support\Contracts\HasDescription;
 
-enum GymPreferences: string implements HasLabel, HasDescription
+enum GymPreferences: string implements HasDescription, HasLabel
 {
     case RegisterKey = 'register_key';
 
@@ -19,7 +19,7 @@ enum GymPreferences: string implements HasLabel, HasDescription
     public function getDescription(): ?string
     {
         return match ($this) {
-            self::RegisterKey => 'Al registrar una entrada del cliente, se debe ingresar el numero de llave / casillero del cliente.',
+            self::RegisterKey => 'Al registrar un check-in, se debe ingresar el número de llave / casillero asignado al cliente.',
         };
     }
 }

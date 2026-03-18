@@ -5,7 +5,7 @@
         </x-slot>
 
         <x-slot name="description">
-            Aquí podrás ver el estado de tus clientes, suscripciones, membresías, etc.
+            {{ now()->isoFormat('dddd, D [de] MMMM [de] YYYY') }}
         </x-slot>
 
         <x-slot name="afterHeader">
@@ -14,7 +14,7 @@
             </x-filament::button>
         </x-slot>
 
-        <div class="w-1/2 h-full mx-auto flex flex-col">
+        <div class="w-full md:w-1/2 h-full mx-auto flex flex-col">
             <livewire:client.search :current-gym="$currentGym" />
         </div>
     </x-filament::section>

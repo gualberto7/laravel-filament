@@ -9,6 +9,8 @@ class SubscriptionsByMembershipChart extends ChartWidget
 {
     protected ?string $heading = 'Suscripciones por membresía';
 
+    protected ?string $pollingInterval = null;
+
     protected static ?int $sort = 3;
 
     protected function getData(): array

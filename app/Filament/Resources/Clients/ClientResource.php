@@ -168,7 +168,7 @@ class ClientResource extends Resource
                     ->description('Últimas 2 suscripciones del cliente')
                     ->headerActions([
                         Action::make('ver_todas')
-                            ->label('Historial de Subscripciones')
+                            ->label('Historial de Suscripciones')
                             ->url(fn (Client $record): string => ClientResource::getUrl('subscriptions', ['record' => $record]))
                             ->color('gray'),
                         Action::make('create')
