@@ -8,7 +8,7 @@ use Filament\Pages\Page;
 
 class SubscriptionsReport extends Page
 {
-    protected static ?string $navigationLabel = 'Subscripciones';
+    protected static ?string $navigationLabel = 'Suscripciones';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Reportes';
 
@@ -16,7 +16,7 @@ class SubscriptionsReport extends Page
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $title = 'Reportes de Subscripciones';
+    protected static ?string $title = 'Reportes de Suscripciones';
 
     protected string $view = 'filament.pages.subscriptions-report';
 

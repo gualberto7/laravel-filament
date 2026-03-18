@@ -9,6 +9,8 @@ class RevenueByPaymentMethodChart extends ChartWidget
 {
     protected ?string $heading = 'Ingresos por método de pago';
 
+    protected ?string $pollingInterval = null;
+
     protected static ?int $sort = 2;
 
     protected function getData(): array

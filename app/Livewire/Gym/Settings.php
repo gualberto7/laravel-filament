@@ -2,29 +2,31 @@
 
 namespace App\Livewire\Gym;
 
-use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Schemas\Schema;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms;
-use Livewire\Component;
-use App\Enums\GymPreferences;
-use Livewire\Attributes\Computed;
+use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
-use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Schemas\Schema;
+use Livewire\Attributes\Computed;
+use Livewire\Component;
+use App\Enums\GymPreferences;
 
-class Settings extends Component implements HasForms, HasActions
+class Settings extends Component implements HasActions, HasForms
 {
     use InteractsWithActions;
     use InteractsWithForms;
 
     public $currentGym;
+
     public $preferences;
+
     public $initialState = [];
+
     public $data = [];
 
-    public function mount($currentGym)
+    public function mount($currentGym): void
     {
         $this->currentGym = $currentGym;
         $this->preferences = $this->currentGym->preferences;

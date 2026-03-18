@@ -236,6 +236,7 @@ class SubscriptionResource extends Resource
                     ->headerActions([
                         Action::make('edit')
                             ->label('Editar')
+                            ->visible(auth()->user()->hasRole('owner'))
                             ->url(fn (Subscription $record): string => SubscriptionResource::getUrl('edit', ['record' => $record])),
                     ])
                     ->schema([
