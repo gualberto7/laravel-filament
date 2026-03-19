@@ -55,6 +55,7 @@ class SubscriptionResource extends Resource
                             ->relationship('membership', 'name', function ($query) {
                                 Membership::getActivePromosQuery($query);
                             })
+                            ->label('Membresía')
                             ->required()
                             ->live()
                             ->disabledOn(['edit'])
@@ -75,10 +76,12 @@ class SubscriptionResource extends Resource
                                 }
                             }),
                         TextInput::make('price')
+                            ->label('Precio')
                             ->prefix('Bs.')
                             ->readOnly(),
                         DatePicker::make('start_date')
-                            ->default(now())
+                            ->label('Fecha Inicio')
+                            ->default(today())
                             ->live()
                             ->disabledOn(['edit'])
                             ->afterStateUpdated(function (Set $set, Get $get, $state) {
@@ -91,6 +94,7 @@ class SubscriptionResource extends Resource
                             })
                             ->required(),
                         DatePicker::make('end_date')
+                            ->label('Fecha Fin')
                             ->readOnly(),
                     ])
                     ->columnSpanFull(),
@@ -98,6 +102,7 @@ class SubscriptionResource extends Resource
                 Section::make('Datos del Cliente')
                     ->schema([
                         Select::make('clients')
+                            ->label('Cliente/s')
                             ->relationship('clients', 'name')
                             ->createOptionForm([
                                 TextInput::make('name')
@@ -120,8 +125,11 @@ class SubscriptionResource extends Resource
                                     ->maxLength(255),
                             ])
                             ->createOptionUsing(function (array $data): string {
+                                $auth_user = auth()->user();
                                 $client = Client::create($data + [
-                                    'gym_id' => auth()->user()->getCurrentGymId(),
+                                    'gym_id' => $auth_user->getCurrentGymId(),
+                                    'created_by' => $auth_user->name,
+                                    'updated_by' => $auth_user->name,
                                 ]);
 
                                 return $client->id;
@@ -152,10 +160,12 @@ class SubscriptionResource extends Resource
                             ->label(fn (Get $get): string => self::updatePaymentStatus($get))
                             ->schema([
                                 TextInput::make('amount')
+                                    ->label('Monto')
                                     ->prefix('Bs.')
                                     ->live()
                                     ->required(),
                                 Select::make('method')
+                                    ->label('Método de pago')
                                     ->options(PaymentMethod::class)
                                     ->required(),
                             ])
@@ -342,6 +352,6 @@ class SubscriptionResource extends Resource
             return 'Pagado: '.$totalAmount.' de '.$membership->price;
         }
 
-        return '';
+        return 'Pagos';
     }
 }
